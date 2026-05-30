@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - 500 Database</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Multi Template</title>
     <style>
+        /* ========================================================
+           GLOBAL STYLES & INPUT PANEL
+           ======================================================== */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .app-container { max-width: 1100px; margin: 0 auto; display: flex; gap: 20px; }
+        .app-container { max-width: 1150px; margin: 0 auto; display: flex; gap: 20px; }
         .input-panel { flex: 1; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .input-panel h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #2cc711; padding-bottom: 8px; font-size: 18px; }
+        .input-panel h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #2cc711; padding-bottom: 8px; font-size: 16px; text-transform: uppercase;}
         .form-group { margin-bottom: 12px; }
         .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
         .form-row > div { flex: 1; }
@@ -20,7 +23,10 @@
         .btn-print { background-color: #3498db; color: white; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; }
         .btn-print:hover { background-color: #2980b9; }
 
-        .preview-panel { width: 21cm; min-height: 29.7cm; background: #fff; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); box-sizing: border-box; }
+        /* ========================================================
+           TEMPLATE 1: DESAIN ASLI (DEFAULT)
+           ======================================================== */
+        .preview-panel { width: 21cm; min-height: 29.7cm; background: #fff; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
         .comp-info h1 { margin: 0; font-size: 20px; color: #e67e22; text-transform: uppercase; }
         .comp-info p { margin: 2px 0; font-size: 11px; color: #555; }
@@ -29,13 +35,13 @@
         .inv-title p { margin: 3px 0 0; font-weight: bold; font-size: 12px; }
         .info-section { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 15px; }
         .info-box { width: 50%; border: 1px solid #ddd; padding: 8px; border-radius: 4px; }
-        .info-box h3 { margin: 0 0 8px 0; font-size: 12px; border-bottom: 1px solid #ddd; padding-bottom: 4px; background-color: #f9f9f9; }
+        .info-box h3 { margin: 0 0 8px 0; font-size: 12px; border-bottom: 1px solid #ddd; padding-bottom: 4px; background-color: #f9f9f9; color:#333; }
         .info-table { width: 100%; border-collapse: collapse; }
-        .info-table td { padding: 3px 0; font-size: 11px; vertical-align: top; }
+        .info-table td { padding: 3px 0; font-size: 11px; vertical-align: top; color: #333; }
         .info-table td:first-child { width: 85px; font-weight: bold; }
         .items-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .items-table th { background-color: #333; color: #fff; padding: 6px 8px; text-align: left; font-size: 11px; }
-        .items-table td { padding: 6px 8px; border: 1px solid #eee; font-size: 11px; }
+        .items-table th { background-color: #333; color: #fff; padding: 6px 8px; text-align: left; font-size: 11px; border:1px solid #333;}
+        .items-table td { padding: 6px 8px; border: 1px solid #eee; font-size: 11px; color: #333;}
         .text-right { text-align: right; }
         .text-center { text-align: center; }
         .btn-del-item { background: #e74c3c; color: white; padding: 2px 6px; font-size: 10px; border-radius: 3px; }
@@ -43,13 +49,81 @@
         .summary-container { display: flex; justify-content: space-between; }
         .notes-view { width: 50%; font-size: 10px; color: #555; line-height: 1.4; }
         .summary-table { width: 45%; border-collapse: collapse; }
-        .summary-table td { padding: 4px; font-size: 11px; }
+        .summary-table td { padding: 4px; font-size: 11px; color: #333;}
         .summary-table td:first-child { font-weight: bold; text-align: right; }
         .summary-table td:last-child { text-align: right; width: 100px; }
         .grand-total-row { font-size: 13px; font-weight: bold; background-color: #f2f2f2; border-top: 1px solid #333; border-bottom: 1px solid #333; }
         .sig-section { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; }
-        .sig-box { width: 30%; font-size: 11px; }
+        .sig-box { width: 30%; font-size: 11px; color: #333;}
         .sig-line { margin-top: 50px; border-top: 1px solid #333; padding-top: 3px; font-weight: bold; }
+
+        /* ========================================================
+           TEMPLATE 2: MODERN CORPORATE (Biru Dongker)
+           ======================================================== */
+        .theme-2 { font-family: Arial, sans-serif; }
+        .theme-2 .comp-info h1 { color: #2c3e50; }
+        .theme-2 .invoice-header { border-bottom: 3px solid #2980b9; }
+        .theme-2 .inv-title h2 { color: #2980b9; }
+        .theme-2 .info-box { border: 1px solid #2980b9; border-left: 4px solid #2980b9; background: #fbfbfc;}
+        .theme-2 .info-box h3 { background-color: transparent; border-bottom: 1px solid #2980b9; color: #2980b9;}
+        .theme-2 .items-table th { background-color: #2980b9; border: 1px solid #2980b9; }
+        .theme-2 .items-table td { border: 1px solid #dcdde1; }
+        .theme-2 .grand-total-row { background-color: #ebf5fb; border-top: 2px solid #2980b9; border-bottom: 2px solid #2980b9; color: #2980b9; }
+        .theme-2 .sig-line { border-top: 1px solid #2980b9; }
+
+        /* ========================================================
+           TEMPLATE 3: KLASIK / DOT MATRIX (Mesin Tik/Kertas Bon)
+           ======================================================== */
+        .theme-3 { font-family: 'Courier New', Courier, monospace; }
+        .theme-3 .comp-info h1 { color: #000; font-size: 22px; letter-spacing: -1px; }
+        .theme-3 .invoice-header { border-bottom: 2px dashed #000; }
+        .theme-3 .info-box { border: none; padding: 0; }
+        .theme-3 .info-box h3 { background: none; border-bottom: 1px dashed #000; font-size: 13px; }
+        .theme-3 .items-table th { background-color: #fff; color: #000; border: 1px dashed #000; border-left: none; border-right: none;}
+        .theme-3 .items-table td { border: 1px dashed #ccc; border-left: none; border-right: none;}
+        .theme-3 .grand-total-row { background-color: transparent; border-top: 2px dashed #000; border-bottom: 2px dashed #000; }
+        .theme-3 .sig-line { border-top: 1px dashed #000; }
+
+        /* ========================================================
+           TEMPLATE 4: SPORTY / RACING (Merah & Hitam)
+           ======================================================== */
+        .theme-4 .comp-info h1 { color: #c0392b; font-style: italic;}
+        .theme-4 .invoice-header { border-bottom: 4px solid #c0392b; }
+        .theme-4 .inv-title h2 { color: #c0392b; font-style: italic; }
+        .theme-4 .info-box { border-radius: 0; border: 1px solid #c0392b; box-shadow: 2px 2px 0px #c0392b;}
+        .theme-4 .info-box h3 { background-color: #c0392b; color: white; }
+        .theme-4 .items-table th { background-color: #c0392b; border: 1px solid #c0392b; text-transform: uppercase;}
+        .theme-4 .items-table td { border: 1px solid #e0e0e0; }
+        .theme-4 .grand-total-row { background-color: #f9ebea; border-top: 2px solid #c0392b; border-bottom: 2px solid #c0392b; color: #c0392b; }
+
+        /* ========================================================
+           TEMPLATE 5: MINIMALIS CLEAN (Abu-abu Elegan)
+           ======================================================== */
+        .theme-5 { color: #555; }
+        .theme-5 .comp-info h1 { color: #333; font-weight: 300; letter-spacing: 2px;}
+        .theme-5 .invoice-header { border-bottom: 1px solid #eee; margin-bottom: 30px;}
+        .theme-5 .inv-title h2 { color: #999; font-weight: 300; }
+        .theme-5 .info-box { border: none; background: #fdfdfd; }
+        .theme-5 .info-box h3 { background: none; border-bottom: 2px solid #eee; color: #777;}
+        .theme-5 .items-table th { background-color: #f5f5f5; color: #777; border: none; border-bottom: 2px solid #ddd;}
+        .theme-5 .items-table td { border: none; border-bottom: 1px solid #f0f0f0; padding: 10px 8px;}
+        .theme-5 .grand-total-row { background-color: transparent; border-top: 2px solid #333; border-bottom: none; font-size: 15px;}
+        .theme-5 .sig-line { border-top: 1px solid #ccc; color: #777;}
+
+        /* ========================================================
+           TEMPLATE 6: PREMIUM GOLD (Eksklusif / VIP)
+           ======================================================== */
+        .theme-6 { font-family: 'Times New Roman', Times, serif; }
+        .theme-6 .comp-info h1 { color: #b8860b; }
+        .theme-6 .invoice-header { border-bottom: 2px solid #b8860b; }
+        .theme-6 .inv-title h2 { color: #333; }
+        .theme-6 .info-box { border: 1px solid #eee; border-top: 3px solid #b8860b; }
+        .theme-6 .info-box h3 { background-color: #fff; color: #b8860b; font-size: 13px;}
+        .theme-6 .items-table th { background-color: #111; color: #b8860b; border: 1px solid #111;}
+        .theme-6 .items-table td { border: 1px solid #e5e5e5; }
+        .theme-6 .grand-total-row { background-color: #faf8f0; border-top: 2px solid #b8860b; border-bottom: 2px solid #b8860b; color: #b8860b; font-size: 14px;}
+        .theme-6 .sig-line { border-top: 1px solid #b8860b; }
+
 
         @media print {
             body { background-color: #fff; padding: 0; }
@@ -64,9 +138,34 @@
 
 <div class="app-container">
     <div class="input-panel">
+        
+        <h2>A. Pengaturan Identitas & Template</h2>
+        <div class="form-group">
+            <label>Pilih Bengkel (Kop Surat):</label>
+            <select id="inBengkel" onchange="ubahBengkel()">
+                <option value="0">BENGKEL MOBIL MANOKWARI</option>
+                <option value="1">PAPUA BINTANG MOTOR MANOKWARI</option>
+                <option value="2">MANOKWARI AUTO CARE</option>
+                <option value="3">MUTIARA PAPUA GARAGE</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Pilih Template Invoice:</label>
+            <select id="inTemplate" onchange="ubahTemplate()">
+                <option value="theme-1">Template 1 - Original (Resmi/Standar)</option>
+                <option value="theme-2">Template 2 - Modern Corporate (Biru)</option>
+                <option value="theme-3">Template 3 - Klasik / Kertas Bon</option>
+                <option value="theme-4">Template 4 - Sporty Racing (Merah)</option>
+                <option value="theme-5">Template 5 - Minimalis Clean</option>
+                <option value="theme-6">Template 6 - Premium VIP (Emas/Gold)</option>
+            </select>
+        </div>
+
+        <hr style="border: 1px solid #eee; margin: 20px 0;">
+
         <h2>1. Informasi Invoice</h2>
         <div class="form-row">
-            <div><label>No. Invoice:</label><input type="text" id="inNo" value="INV-2026/05/1044" oninput="sinkronisasiData()"></div>
+            <div><label>No. Invoice:</label><input type="text" id="inNo" value="INV-2026/05/1045" oninput="sinkronisasiData()"></div>
             <div><label>Tanggal:</label><input type="date" id="inTanggal" onchange="sinkronisasiData()"></div>
         </div>
 
@@ -118,7 +217,7 @@
         </div>
         <button type="button" class="btn-add" onclick="tambahItemKeInvoice()">+ Tambah ke Invoice</button>
 
-        <h2>5. Pengaturan</h2>
+        <h2>5. Pengaturan Keuangan</h2>
         <div class="form-row">
             <div><label>PPN (%) jika ada:</label><input type="number" id="inPPN" value="11" min="0" oninput="hitungUlangTotal()"></div>
         </div>
@@ -132,13 +231,14 @@
         <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
     </div>
 
-    <div class="preview-panel">
+    <!-- AREA PREVIEW / CETAK -->
+    <div class="preview-panel theme-1" id="areaCetak">
         <div class="invoice-header">
             <div class="comp-info">
-                <h1>BENGKEL MOBIL MANOKWARI</h1>
-                <p><strong>Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang</strong></p>
-                <p>Jl. Trikora Wosi, Manokwari, Papua Barat 98312</p>
-                <p>Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com</p>
+                <h1 id="viewBengkelNama">BENGKEL MOBIL MANOKWARI</h1>
+                <p><strong id="viewBengkelTagline">Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang</strong></p>
+                <p id="viewBengkelAlamat">Jl. Trikora Wosi, Manokwari, Papua Barat 98312</p>
+                <p id="viewBengkelKontak">Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com</p>
             </div>
             <div class="inv-title">
                 <h2>INVOICE</h2>
@@ -196,7 +296,7 @@
         </div>
 
         <div class="sig-section">
-            <div class="sig-box"><p>Hormat Kami,</p><div class="sig-line">Service Advisor</div></div>
+            <div class="sig-box"><p>Hormat Kami,</p><div class="sig-line" id="ttdBengkel">BENGKEL MOBIL MANOKWARI</div></div>
             <div class="sig-box"><p>Mekanik,</p><div class="sig-line">Kepala Mekanik</div></div>
             <div class="sig-box"><p>Pelanggan,</p><div class="sig-line">Tanda Tangan</div></div>
         </div>
@@ -204,6 +304,53 @@
 </div>
 
 <script>
+    // DATA PROFIL MULTI-BENGKEL
+    const dataBengkel = [
+        {
+            nama: "BENGKEL MOBIL MANOKWARI",
+            tagline: "Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang",
+            alamat: "Jl. Trikora Wosi, Manokwari, Papua Barat 98312",
+            kontak: "Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com"
+        },
+        {
+            nama: "PAPUA BINTANG MOTOR",
+            tagline: "Spesialis Engine, Kaki-Kaki & AC Mobil",
+            alamat: "Jl. Yos Sudarso No. 88, Sanggeng, Manokwari 98312",
+            kontak: "Telp/WA: 0821-9999-8888 | IG: @papuabintangmotor"
+        },
+        {
+            nama: "MANOKWARI AUTO CARE",
+            tagline: "Body Repair, Scanner & Perawatan Berkala",
+            alamat: "Jl. Gunung Salju, Amban, Manokwari, Papua Barat",
+            kontak: "Telp: 0986-212XXX | Email: autocare.mkw@gmail.com"
+        },
+        {
+            nama: "MUTIARA PAPUA GARAGE",
+            tagline: "Toko Ban, Spooring, Balancing & Sparepart Lengkap",
+            alamat: "Jl. Rendani (Dekat Bandara), Manokwari Selatan",
+            kontak: "Telp: 0852-1111-2222 | Melayani Panggilan 24 Jam"
+        }
+    ];
+
+    // FUNGSI UBAH PROFIL BENGKEL KOP SURAT
+    function ubahBengkel() {
+        const index = document.getElementById("inBengkel").value;
+        const b = dataBengkel[index];
+        document.getElementById("viewBengkelNama").innerText = b.nama;
+        document.getElementById("viewBengkelTagline").innerText = b.tagline;
+        document.getElementById("viewBengkelAlamat").innerText = b.alamat;
+        document.getElementById("viewBengkelKontak").innerText = b.kontak;
+        document.getElementById("ttdBengkel").innerText = b.nama;
+    }
+
+    // FUNGSI UBAH TEMPLATE CSS
+    function ubahTemplate() {
+        const selectedTheme = document.getElementById("inTemplate").value;
+        const area = document.getElementById("areaCetak");
+        // Hapus class theme lama, pasang yang baru
+        area.className = "preview-panel " + selectedTheme;
+    }
+
     // DATABASE 500 ITEM (300 Part + 100 Ban + 100 Jasa)
     const databaseSukuCadang = {
         "Toyota": [
@@ -510,7 +657,6 @@
             { nama: "[Daihatsu] Karet Pedal Kopling / Rem", harga: 25000, tipe: "part" }
         ],
         "Ban": [
-            // R13 (Pick Up, Mobil Kecil) - 10 Items
             { nama: "[Ban] GT Radial Maxmiler Pro 165/80 R13 (Pick Up)", harga: 650000, tipe: "part" },
             { nama: "[Ban] GT Radial Champiro Eco 155/80 R13", harga: 600000, tipe: "part" },
             { nama: "[Ban] Bridgestone Duravis R624 165/80 R13", harga: 850000, tipe: "part" },
@@ -521,8 +667,6 @@
             { nama: "[Ban] Accelera Eco Plush 165/80 R13", harga: 550000, tipe: "part" },
             { nama: "[Ban] Forceum D600 165/80 R13", harga: 530000, tipe: "part" },
             { nama: "[Ban] Goodyear Duraplus 165/80 R13", harga: 750000, tipe: "part" },
-
-            // R14 (LCGC, MPV Kecil) - 15 Items
             { nama: "[Ban] GT Radial Champiro Eco 175/65 R14 (Agya/Sigra)", harga: 680000, tipe: "part" },
             { nama: "[Ban] GT Radial Champiro Ecotec 185/70 R14 (Avanza Lama)", harga: 720000, tipe: "part" },
             { nama: "[Ban] Bridgestone Ecopia EP150 175/65 R14", harga: 950000, tipe: "part" },
@@ -538,8 +682,6 @@
             { nama: "[Ban] Achilles 122 185/70 R14", harga: 680000, tipe: "part" },
             { nama: "[Ban] Accelera Eco Plush 175/65 R14", harga: 620000, tipe: "part" },
             { nama: "[Ban] Goodyear Assurance Duraplus 2 185/70 R14", harga: 850000, tipe: "part" },
-
-            // R15 (MPV, Sedan) - 20 Items
             { nama: "[Ban] GT Radial Champiro Ecotec 185/65 R15 (Avanza/Ertiga)", harga: 780000, tipe: "part" },
             { nama: "[Ban] GT Radial Champiro GTX Pro 185/65 R15", harga: 820000, tipe: "part" },
             { nama: "[Ban] GT Radial Savero SUV 235/75 R15 (Taft/Katana)", harga: 1250000, tipe: "part" },
@@ -560,8 +702,6 @@
             { nama: "[Ban] Accelera Eco Plush 185/65 R15", harga: 680000, tipe: "part" },
             { nama: "[Ban] Accelera Omikron MT 235/75 R15", harga: 1450000, tipe: "part" },
             { nama: "[Ban] Goodyear Assurance Triplemax 2 185/65 R15", harga: 950000, tipe: "part" },
-
-            // R16 (MPV Baru, SUV Compact) - 25 Items
             { nama: "[Ban] GT Radial Champiro Ecotec 205/55 R16 (Xpander)", harga: 950000, tipe: "part" },
             { nama: "[Ban] GT Radial Savero SUV 215/65 R16 (Rush/Terios)", harga: 1100000, tipe: "part" },
             { nama: "[Ban] GT Radial Savero AT Plus 245/70 R16 (Triton/Hilux)", harga: 1350000, tipe: "part" },
@@ -587,8 +727,6 @@
             { nama: "[Ban] Accelera Omikron AT 245/70 R16", harga: 1300000, tipe: "part" },
             { nama: "[Ban] Accelera Badak X-Treme 245/70 R16", harga: 1850000, tipe: "part" },
             { nama: "[Ban] Goodyear Wrangler AT SilentTrac 245/70 R16", harga: 1550000, tipe: "part" },
-
-            // R17 (SUV Menengah/Atas) - 20 Items
             { nama: "[Ban] GT Radial Savero SUV 225/65 R17 (CR-V/X-Trail)", harga: 1250000, tipe: "part" },
             { nama: "[Ban] GT Radial Savero AT Plus 265/65 R17 (Pajero/Fortuner)", harga: 1550000, tipe: "part" },
             { nama: "[Ban] GT Radial Komodo MT Plus 265/65 R17", harga: 1950000, tipe: "part" },
@@ -609,8 +747,6 @@
             { nama: "[Ban] Accelera Omikron AT 265/65 R17", harga: 1400000, tipe: "part" },
             { nama: "[Ban] Accelera Omikron MT 265/65 R17", harga: 1650000, tipe: "part" },
             { nama: "[Ban] Goodyear Wrangler AT SilentTrac 265/65 R17", harga: 1950000, tipe: "part" },
-
-            // R18 (SUV Premium) - 10 Items
             { nama: "[Ban] GT Radial Savero SUV 265/60 R18 (Pajero Dakar/Fortuner VRZ)", harga: 1750000, tipe: "part" },
             { nama: "[Ban] Bridgestone Dueler HT 684 265/60 R18", harga: 2850000, tipe: "part" },
             { nama: "[Ban] Bridgestone Dueler AT 697 265/60 R18", harga: 3100000, tipe: "part" },
@@ -623,7 +759,6 @@
             { nama: "[Ban] Accelera Omikron AT 265/60 R18", harga: 1600000, tipe: "part" }
         ],
         "Jasa": [
-            // Perawatan Berkala (10)
             { nama: "Jasa Service Berkala 10.000 KM", harga: 350000, tipe: "jasa" },
             { nama: "Jasa Service Berkala 20.000 KM", harga: 450000, tipe: "jasa" },
             { nama: "Jasa Service Berkala 30.000 KM", harga: 350000, tipe: "jasa" },
@@ -634,8 +769,6 @@
             { nama: "Jasa Service Berkala 80.000 KM (Service Besar)", harga: 750000, tipe: "jasa" },
             { nama: "Jasa Service Berkala 90.000 KM", harga: 350000, tipe: "jasa" },
             { nama: "Jasa Service Berkala 100.000 KM", harga: 850000, tipe: "jasa" },
-            
-            // Mesin & Ganti Oli (25)
             { nama: "Jasa Ganti Oli Mesin & Filter", harga: 50000, tipe: "jasa" },
             { nama: "Jasa Kuras & Ganti Oli Transmisi Manual", harga: 75000, tipe: "jasa" },
             { nama: "Jasa Kuras & Ganti Oli Transmisi Matic (ATF)", harga: 250000, tipe: "jasa" },
@@ -661,8 +794,6 @@
             { nama: "Jasa Ganti Filter Udara", harga: 25000, tipe: "jasa" },
             { nama: "Jasa Ganti Filter Solar", harga: 50000, tipe: "jasa" },
             { nama: "Jasa Cek Kebocoran Oli Mesin", harga: 100000, tipe: "jasa" },
-
-            // Kaki-kaki, Roda & Suspensi (25)
             { nama: "Jasa Spooring Roda Depan & Belakang", harga: 250000, tipe: "jasa" },
             { nama: "Jasa Balancing Roda (Per Ban)", harga: 40000, tipe: "jasa" },
             { nama: "Jasa Rotasi Ban (Per Ban)", harga: 20000, tipe: "jasa" },
@@ -688,8 +819,6 @@
             { nama: "Jasa Setel Kelurusan Stir / Kemudi", harga: 75000, tipe: "jasa" },
             { nama: "Jasa Ganti Baut Roda Dol/Patah (Per Baut)", harga: 50000, tipe: "jasa" },
             { nama: "Jasa Cek Kelayakan Kaki-kaki (Inspeksi)", harga: 100000, tipe: "jasa" },
-
-            // Rem / Brake System (15)
             { nama: "Jasa Ganti Kampas Rem Depan (Cakram)", harga: 150000, tipe: "jasa" },
             { nama: "Jasa Ganti Kampas Rem Belakang (Tromol)", harga: 180000, tipe: "jasa" },
             { nama: "Jasa Pembersihan & Penyetelan Rem 4 Roda", harga: 250000, tipe: "jasa" },
@@ -705,8 +834,6 @@
             { nama: "Jasa Ganti Kabel Rem Tangan", harga: 250000, tipe: "jasa" },
             { nama: "Jasa Ganti Switch Lampu Rem", harga: 50000, tipe: "jasa" },
             { nama: "Jasa Pengecekan Sistem ABS", harga: 250000, tipe: "jasa" },
-
-            // Kelistrikan & AC (15)
             { nama: "Jasa Cek & Scan Komputer (Scanner OBD)", harga: 200000, tipe: "jasa" },
             { nama: "Jasa Tambah Freon AC R134a", harga: 250000, tipe: "jasa" },
             { nama: "Jasa Isi Ulang Freon Kuras Total AC", harga: 450000, tipe: "jasa" },
@@ -722,8 +849,6 @@
             { nama: "Jasa Ganti Bohlam Lampu Utama (Per Sisi)", harga: 35000, tipe: "jasa" },
             { nama: "Jasa Pasang Alarm / Central Lock System", harga: 350000, tipe: "jasa" },
             { nama: "Jasa Ganti Sekring (Fuse) Konslet", harga: 25000, tipe: "jasa" },
-
-            // Transmisi, Kopling & Lainnya (10)
             { nama: "Jasa Turun Transmisi / Ganti Kopling Set (Mobil RWD)", harga: 850000, tipe: "jasa" },
             { nama: "Jasa Turun Transmisi / Ganti Kopling Set (Mobil FWD)", harga: 1200000, tipe: "jasa" },
             { nama: "Jasa Ganti Master Kopling Atas", harga: 250000, tipe: "jasa" },
@@ -847,6 +972,8 @@
 
     function hitungUlangTotal() { tampilkanTabelInvoice(); }
 
+    // Init Call
+    ubahBengkel();
     sinkronisasiData();
     tampilkanTabelInvoice();
 </script>
