@@ -58,20 +58,6 @@
         .sig-line { margin-top: 50px; border-top: 1px solid #333; padding-top: 3px; font-weight: bold; }
 
         /* ========================================================
-           TEMPLATE 2: MODERN CORPORATE (Biru Dongker)
-           ======================================================== */
-        .theme-2 { font-family: Arial, sans-serif; }
-        .theme-2 .comp-info h1 { color: #2c3e50; }
-        .theme-2 .invoice-header { border-bottom: 3px solid #2980b9; }
-        .theme-2 .inv-title h2 { color: #2980b9; }
-        .theme-2 .info-box { border: 1px solid #2980b9; border-left: 4px solid #2980b9; background: #fbfbfc;}
-        .theme-2 .info-box h3 { background-color: transparent; border-bottom: 1px solid #2980b9; color: #2980b9;}
-        .theme-2 .items-table th { background-color: #2980b9; border: 1px solid #2980b9; }
-        .theme-2 .items-table td { border: 1px solid #dcdde1; }
-        .theme-2 .grand-total-row { background-color: #ebf5fb; border-top: 2px solid #2980b9; border-bottom: 2px solid #2980b9; color: #2980b9; }
-        .theme-2 .sig-line { border-top: 1px solid #2980b9; }
-
-        /* ========================================================
            TEMPLATE 3: KLASIK / DOT MATRIX (Mesin Tik/Kertas Bon)
            ======================================================== */
         .theme-3 { font-family: 'Courier New', Courier, monospace; }
@@ -83,18 +69,6 @@
         .theme-3 .items-table td { border: 1px dashed #ccc; border-left: none; border-right: none;}
         .theme-3 .grand-total-row { background-color: transparent; border-top: 2px dashed #000; border-bottom: 2px dashed #000; }
         .theme-3 .sig-line { border-top: 1px dashed #000; }
-
-        /* ========================================================
-           TEMPLATE 4: SPORTY / RACING (Merah & Hitam)
-           ======================================================== */
-        .theme-4 .comp-info h1 { color: #c0392b; font-style: italic;}
-        .theme-4 .invoice-header { border-bottom: 4px solid #c0392b; }
-        .theme-4 .inv-title h2 { color: #c0392b; font-style: italic; }
-        .theme-4 .info-box { border-radius: 0; border: 1px solid #c0392b; box-shadow: 2px 2px 0px #c0392b;}
-        .theme-4 .info-box h3 { background-color: #c0392b; color: white; }
-        .theme-4 .items-table th { background-color: #c0392b; border: 1px solid #c0392b; text-transform: uppercase;}
-        .theme-4 .items-table td { border: 1px solid #e0e0e0; }
-        .theme-4 .grand-total-row { background-color: #f9ebea; border-top: 2px solid #c0392b; border-bottom: 2px solid #c0392b; color: #c0392b; }
 
         /* ========================================================
            TEMPLATE 5: MINIMALIS CLEAN (Abu-abu Elegan)
@@ -109,20 +83,6 @@
         .theme-5 .items-table td { border: none; border-bottom: 1px solid #f0f0f0; padding: 10px 8px;}
         .theme-5 .grand-total-row { background-color: transparent; border-top: 2px solid #333; border-bottom: none; font-size: 15px;}
         .theme-5 .sig-line { border-top: 1px solid #ccc; color: #777;}
-
-        /* ========================================================
-           TEMPLATE 6: PREMIUM GOLD (Eksklusif / VIP)
-           ======================================================== */
-        .theme-6 { font-family: 'Times New Roman', Times, serif; }
-        .theme-6 .comp-info h1 { color: #b8860b; }
-        .theme-6 .invoice-header { border-bottom: 2px solid #b8860b; }
-        .theme-6 .inv-title h2 { color: #333; }
-        .theme-6 .info-box { border: 1px solid #eee; border-top: 3px solid #b8860b; }
-        .theme-6 .info-box h3 { background-color: #fff; color: #b8860b; font-size: 13px;}
-        .theme-6 .items-table th { background-color: #111; color: #b8860b; border: 1px solid #111;}
-        .theme-6 .items-table td { border: 1px solid #e5e5e5; }
-        .theme-6 .grand-total-row { background-color: #faf8f0; border-top: 2px solid #b8860b; border-bottom: 2px solid #b8860b; color: #b8860b; font-size: 14px;}
-        .theme-6 .sig-line { border-top: 1px solid #b8860b; }
 
 
         @media print {
@@ -153,11 +113,8 @@
             <label>Pilih Template Invoice:</label>
             <select id="inTemplate" onchange="ubahTemplate()">
                 <option value="theme-1">Template 1 - Original (Resmi/Standar)</option>
-                <option value="theme-2">Template 2 - Modern Corporate (Biru)</option>
                 <option value="theme-3">Template 3 - Klasik / Kertas Bon</option>
-                <option value="theme-4">Template 4 - Sporty Racing (Merah)</option>
                 <option value="theme-5">Template 5 - Minimalis Clean</option>
-                <option value="theme-6">Template 6 - Premium VIP (Emas/Gold)</option>
             </select>
         </div>
 
