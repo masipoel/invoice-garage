@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - 400+ Database</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - 500 Database</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
         .app-container { max-width: 1100px; margin: 0 auto; display: flex; gap: 20px; }
@@ -66,7 +66,7 @@
     <div class="input-panel">
         <h2>1. Informasi Invoice</h2>
         <div class="form-row">
-            <div><label>No. Invoice:</label><input type="text" id="inNo" value="INV-2026/05/1043" oninput="sinkronisasiData()"></div>
+            <div><label>No. Invoice:</label><input type="text" id="inNo" value="INV-2026/05/1044" oninput="sinkronisasiData()"></div>
             <div><label>Tanggal:</label><input type="date" id="inTanggal" onchange="sinkronisasiData()"></div>
         </div>
 
@@ -95,6 +95,7 @@
                     <option value="Mitsubishi">Mitsubishi (75 Parts)</option>
                     <option value="Suzuki">Suzuki (75 Parts)</option>
                     <option value="Daihatsu">Daihatsu (75 Parts)</option>
+                    <option value="Ban">Ban Mobil (100 Item)</option>
                     <option value="Jasa">Jasa Service (100 Item)</option>
                 </select>
             </div>
@@ -203,7 +204,7 @@
 </div>
 
 <script>
-    // DATABASE 400+ ITEM (300 Suku Cadang & 100 Jasa)
+    // DATABASE 500 ITEM (300 Part + 100 Ban + 100 Jasa)
     const databaseSukuCadang = {
         "Toyota": [
             { nama: "[Toyota] Oli Mesin TMO 10W-40 Synthetic (Galon 4L)", harga: 480000, tipe: "part" },
@@ -508,6 +509,119 @@
             { nama: "[Daihatsu] Switch Oli Mesin Xenia", harga: 110000, tipe: "part" },
             { nama: "[Daihatsu] Karet Pedal Kopling / Rem", harga: 25000, tipe: "part" }
         ],
+        "Ban": [
+            // R13 (Pick Up, Mobil Kecil) - 10 Items
+            { nama: "[Ban] GT Radial Maxmiler Pro 165/80 R13 (Pick Up)", harga: 650000, tipe: "part" },
+            { nama: "[Ban] GT Radial Champiro Eco 155/80 R13", harga: 600000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Duravis R624 165/80 R13", harga: 850000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Ecopia EP150 165/80 R13", harga: 800000, tipe: "part" },
+            { nama: "[Ban] Dunlop SP10 165/80 R13", harga: 750000, tipe: "part" },
+            { nama: "[Ban] Hankook Vantra LT 165/80 R13", harga: 720000, tipe: "part" },
+            { nama: "[Ban] Achilles 122 165/80 R13", harga: 580000, tipe: "part" },
+            { nama: "[Ban] Accelera Eco Plush 165/80 R13", harga: 550000, tipe: "part" },
+            { nama: "[Ban] Forceum D600 165/80 R13", harga: 530000, tipe: "part" },
+            { nama: "[Ban] Goodyear Duraplus 165/80 R13", harga: 750000, tipe: "part" },
+
+            // R14 (LCGC, MPV Kecil) - 15 Items
+            { nama: "[Ban] GT Radial Champiro Eco 175/65 R14 (Agya/Sigra)", harga: 680000, tipe: "part" },
+            { nama: "[Ban] GT Radial Champiro Ecotec 185/70 R14 (Avanza Lama)", harga: 720000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Ecopia EP150 175/65 R14", harga: 950000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Ecopia EP150 185/70 R14", harga: 1100000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Turanza T005A 185/70 R14", harga: 1250000, tipe: "part" },
+            { nama: "[Ban] Dunlop SP Touring R1 175/65 R14", harga: 850000, tipe: "part" },
+            { nama: "[Ban] Dunlop Enasave EC300+ 185/70 R14", harga: 920000, tipe: "part" },
+            { nama: "[Ban] Hankook Kinergy Eco2 175/65 R14", harga: 780000, tipe: "part" },
+            { nama: "[Ban] Hankook Kinergy Eco2 185/70 R14", harga: 850000, tipe: "part" },
+            { nama: "[Ban] Michelin Energy XM2+ 175/65 R14", harga: 1200000, tipe: "part" },
+            { nama: "[Ban] Michelin Energy XM2+ 185/70 R14", harga: 1350000, tipe: "part" },
+            { nama: "[Ban] Achilles 122 175/65 R14", harga: 650000, tipe: "part" },
+            { nama: "[Ban] Achilles 122 185/70 R14", harga: 680000, tipe: "part" },
+            { nama: "[Ban] Accelera Eco Plush 175/65 R14", harga: 620000, tipe: "part" },
+            { nama: "[Ban] Goodyear Assurance Duraplus 2 185/70 R14", harga: 850000, tipe: "part" },
+
+            // R15 (MPV, Sedan) - 20 Items
+            { nama: "[Ban] GT Radial Champiro Ecotec 185/65 R15 (Avanza/Ertiga)", harga: 780000, tipe: "part" },
+            { nama: "[Ban] GT Radial Champiro GTX Pro 185/65 R15", harga: 820000, tipe: "part" },
+            { nama: "[Ban] GT Radial Savero SUV 235/75 R15 (Taft/Katana)", harga: 1250000, tipe: "part" },
+            { nama: "[Ban] GT Radial Komodo MT Plus 235/75 R15 (Offroad)", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Ecopia EP150 185/65 R15", harga: 1150000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Turanza T005A 185/65 R15", harga: 1350000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler AT 697 235/75 R15", harga: 1850000, tipe: "part" },
+            { nama: "[Ban] Dunlop Enasave EC300+ 185/65 R15", harga: 980000, tipe: "part" },
+            { nama: "[Ban] Dunlop SP Sport LM705 185/65 R15", harga: 1100000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek AT3 235/75 R15", harga: 1550000, tipe: "part" },
+            { nama: "[Ban] Hankook Kinergy Eco2 185/65 R15", harga: 880000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro AT2 235/75 R15", harga: 1450000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro MT2 235/75 R15", harga: 1750000, tipe: "part" },
+            { nama: "[Ban] Michelin Energy XM2+ 185/65 R15", harga: 1450000, tipe: "part" },
+            { nama: "[Ban] Michelin LTX Force 235/75 R15", harga: 2100000, tipe: "part" },
+            { nama: "[Ban] Achilles 122 185/65 R15", harga: 720000, tipe: "part" },
+            { nama: "[Ban] Achilles Desert Hawk MT 235/75 R15", harga: 1500000, tipe: "part" },
+            { nama: "[Ban] Accelera Eco Plush 185/65 R15", harga: 680000, tipe: "part" },
+            { nama: "[Ban] Accelera Omikron MT 235/75 R15", harga: 1450000, tipe: "part" },
+            { nama: "[Ban] Goodyear Assurance Triplemax 2 185/65 R15", harga: 950000, tipe: "part" },
+
+            // R16 (MPV Baru, SUV Compact) - 25 Items
+            { nama: "[Ban] GT Radial Champiro Ecotec 205/55 R16 (Xpander)", harga: 950000, tipe: "part" },
+            { nama: "[Ban] GT Radial Savero SUV 215/65 R16 (Rush/Terios)", harga: 1100000, tipe: "part" },
+            { nama: "[Ban] GT Radial Savero AT Plus 245/70 R16 (Triton/Hilux)", harga: 1350000, tipe: "part" },
+            { nama: "[Ban] GT Radial Komodo MT Plus 245/70 R16", harga: 1750000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Ecopia EP150 205/55 R16", harga: 1350000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Turanza T005A 205/55 R16", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler HT 687 215/65 R16", harga: 1600000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler AT 697 245/70 R16", harga: 2100000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler MT 674 245/70 R16", harga: 2450000, tipe: "part" },
+            { nama: "[Ban] Dunlop Enasave EC300+ 205/55 R16", harga: 1150000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek ST20 215/65 R16", harga: 1300000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek AT3 245/70 R16", harga: 1750000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek MT2 245/70 R16", harga: 1950000, tipe: "part" },
+            { nama: "[Ban] Hankook Kinergy Eco2 205/55 R16", harga: 1050000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro HT 215/65 R16", harga: 1250000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro AT2 245/70 R16", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro MT2 245/70 R16", harga: 1850000, tipe: "part" },
+            { nama: "[Ban] Michelin Primacy 4 205/55 R16", harga: 1800000, tipe: "part" },
+            { nama: "[Ban] Michelin LTX Trail 245/70 R16", harga: 2450000, tipe: "part" },
+            { nama: "[Ban] BFGoodrich All-Terrain KO2 245/70 R16", harga: 3800000, tipe: "part" },
+            { nama: "[Ban] Achilles Desert Hawk HT 215/65 R16", harga: 950000, tipe: "part" },
+            { nama: "[Ban] Achilles Desert Hawk MT 245/70 R16", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Accelera Omikron AT 245/70 R16", harga: 1300000, tipe: "part" },
+            { nama: "[Ban] Accelera Badak X-Treme 245/70 R16", harga: 1850000, tipe: "part" },
+            { nama: "[Ban] Goodyear Wrangler AT SilentTrac 245/70 R16", harga: 1550000, tipe: "part" },
+
+            // R17 (SUV Menengah/Atas) - 20 Items
+            { nama: "[Ban] GT Radial Savero SUV 225/65 R17 (CR-V/X-Trail)", harga: 1250000, tipe: "part" },
+            { nama: "[Ban] GT Radial Savero AT Plus 265/65 R17 (Pajero/Fortuner)", harga: 1550000, tipe: "part" },
+            { nama: "[Ban] GT Radial Komodo MT Plus 265/65 R17", harga: 1950000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Alenza 001 225/65 R17", harga: 2100000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler HT 684 265/65 R17", harga: 2350000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler AT 697 265/65 R17", harga: 2650000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler MT 674 265/65 R17", harga: 2850000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek ST30 225/65 R17", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek AT25 265/65 R17", harga: 1950000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek MT2 265/65 R17", harga: 2200000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro HP2 225/65 R17", harga: 1450000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro AT2 265/65 R17", harga: 1850000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro MT2 265/65 R17", harga: 2100000, tipe: "part" },
+            { nama: "[Ban] Michelin Primacy SUV 225/65 R17", harga: 2350000, tipe: "part" },
+            { nama: "[Ban] Michelin LTX Trail 265/65 R17", harga: 2850000, tipe: "part" },
+            { nama: "[Ban] BFGoodrich All-Terrain KO2 265/65 R17", harga: 4800000, tipe: "part" },
+            { nama: "[Ban] Achilles Desert Hawk HT 265/65 R17", harga: 1450000, tipe: "part" },
+            { nama: "[Ban] Accelera Omikron AT 265/65 R17", harga: 1400000, tipe: "part" },
+            { nama: "[Ban] Accelera Omikron MT 265/65 R17", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Goodyear Wrangler AT SilentTrac 265/65 R17", harga: 1950000, tipe: "part" },
+
+            // R18 (SUV Premium) - 10 Items
+            { nama: "[Ban] GT Radial Savero SUV 265/60 R18 (Pajero Dakar/Fortuner VRZ)", harga: 1750000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler HT 684 265/60 R18", harga: 2850000, tipe: "part" },
+            { nama: "[Ban] Bridgestone Dueler AT 697 265/60 R18", harga: 3100000, tipe: "part" },
+            { nama: "[Ban] Dunlop Grandtrek AT25 265/60 R18", harga: 2350000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro HP2 265/60 R18", harga: 1950000, tipe: "part" },
+            { nama: "[Ban] Hankook Dynapro AT2 265/60 R18", harga: 2150000, tipe: "part" },
+            { nama: "[Ban] Michelin Primacy SUV 265/60 R18", harga: 3250000, tipe: "part" },
+            { nama: "[Ban] BFGoodrich All-Terrain KO2 265/60 R18", harga: 5500000, tipe: "part" },
+            { nama: "[Ban] Achilles Desert Hawk HT 265/60 R18", harga: 1650000, tipe: "part" },
+            { nama: "[Ban] Accelera Omikron AT 265/60 R18", harga: 1600000, tipe: "part" }
+        ],
         "Jasa": [
             // Perawatan Berkala (10)
             { nama: "Jasa Service Berkala 10.000 KM", harga: 350000, tipe: "jasa" },
@@ -553,7 +667,7 @@
             { nama: "Jasa Balancing Roda (Per Ban)", harga: 40000, tipe: "jasa" },
             { nama: "Jasa Rotasi Ban (Per Ban)", harga: 20000, tipe: "jasa" },
             { nama: "Jasa Tambal Ban Tubeless (Per Lubang)", harga: 35000, tipe: "jasa" },
-            { nama: "Jasa Ganti Ban (Lepas Pasang Velg)", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Bongkar Pasang & Pasang Ban Baru (Per Velg)", harga: 50000, tipe: "jasa" },
             { nama: "Jasa Ganti Shockbreaker Depan (Per Sisi)", harga: 175000, tipe: "jasa" },
             { nama: "Jasa Ganti Shockbreaker Belakang (Per Sisi)", harga: 150000, tipe: "jasa" },
             { nama: "Jasa Ganti Per Suspensi", harga: 200000, tipe: "jasa" },
