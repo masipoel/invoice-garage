@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Invoice Bengkel Lengkap - 400+ Database</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .app-container { max-width: 1100px; margin: 0 auto; display: flex; gap: 20px; }
+        .input-panel { flex: 1; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .input-panel h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #2cc711; padding-bottom: 8px; font-size: 18px; }
+        .form-group { margin-bottom: 12px; }
+        .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+        .form-row > div { flex: 1; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 12px; color: #555; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
+        button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+        .btn-add { background-color: #27ae60; color: white; width: 100%; }
+        .btn-add:hover { background-color: #219653; }
+        .btn-print { background-color: #3498db; color: white; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; }
+        .btn-print:hover { background-color: #2980b9; }
+
+        .preview-panel { width: 21cm; min-height: 29.7cm; background: #fff; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); box-sizing: border-box; }
+        .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+        .comp-info h1 { margin: 0; font-size: 20px; color: #e67e22; text-transform: uppercase; }
+        .comp-info p { margin: 2px 0; font-size: 11px; color: #555; }
+        .inv-title { text-align: right; }
+        .inv-title h2 { margin: 0; font-size: 24px; color: #333; letter-spacing: 1px; }
+        .inv-title p { margin: 3px 0 0; font-weight: bold; font-size: 12px; }
+        .info-section { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 15px; }
+        .info-box { width: 50%; border: 1px solid #ddd; padding: 8px; border-radius: 4px; }
+        .info-box h3 { margin: 0 0 8px 0; font-size: 12px; border-bottom: 1px solid #ddd; padding-bottom: 4px; background-color: #f9f9f9; }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 3px 0; font-size: 11px; vertical-align: top; }
+        .info-table td:first-child { width: 85px; font-weight: bold; }
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .items-table th { background-color: #333; color: #fff; padding: 6px 8px; text-align: left; font-size: 11px; }
+        .items-table td { padding: 6px 8px; border: 1px solid #eee; font-size: 11px; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .btn-del-item { background: #e74c3c; color: white; padding: 2px 6px; font-size: 10px; border-radius: 3px; }
+        .btn-del-item:hover { background: #c0392b; }
+        .summary-container { display: flex; justify-content: space-between; }
+        .notes-view { width: 50%; font-size: 10px; color: #555; line-height: 1.4; }
+        .summary-table { width: 45%; border-collapse: collapse; }
+        .summary-table td { padding: 4px; font-size: 11px; }
+        .summary-table td:first-child { font-weight: bold; text-align: right; }
+        .summary-table td:last-child { text-align: right; width: 100px; }
+        .grand-total-row { font-size: 13px; font-weight: bold; background-color: #f2f2f2; border-top: 1px solid #333; border-bottom: 1px solid #333; }
+        .sig-section { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; }
+        .sig-box { width: 30%; font-size: 11px; }
+        .sig-line { margin-top: 50px; border-top: 1px solid #333; padding-top: 3px; font-weight: bold; }
+
+        @media print {
+            body { background-color: #fff; padding: 0; }
+            .input-panel { display: none; }
+            .app-container { display: block; }
+            .preview-panel { box-shadow: none; margin: 0; padding: 0; width: 100%; min-height: auto; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="input-panel">
+        <h2>1. Informasi Invoice</h2>
+        <div class="form-row">
+            <div><label>No. Invoice:</label><input type="text" id="inNo" value="INV-2026/05/1043" oninput="sinkronisasiData()"></div>
+            <div><label>Tanggal:</label><input type="date" id="inTanggal" onchange="sinkronisasiData()"></div>
+        </div>
+
+        <h2>2. Data Pelanggan</h2>
+        <div class="form-group"><label>Nama Pelanggan:</label><input type="text" id="inNama" value="Bapak / Ibu ..." oninput="sinkronisasiData()"></div>
+        <div class="form-group"><label>Alamat:</label><input type="text" id="inAlamat" value="Manokwari" oninput="sinkronisasiData()"></div>
+        <div class="form-group"><label>No. Telepon / HP:</label><input type="text" id="inTelp" value="08XX-XXXX-XXXX" oninput="sinkronisasiData()"></div>
+
+        <h2>3. Data Kendaraan</h2>
+        <div class="form-row">
+            <div><label>Merek / Tipe:</label><input type="text" id="inMobil" value="" placeholder="Contoh: Toyota Innova" oninput="sinkronisasiData()"></div>
+            <div><label>No. Polisi (Plat):</label><input type="text" id="inPlat" value="" placeholder="Contoh: PB 1234 XX" oninput="sinkronisasiData()"></div>
+        </div>
+        <div class="form-row">
+            <div><label>Tahun / Warna:</label><input type="text" id="inWarna" value="" oninput="sinkronisasiData()"></div>
+            <div><label>Kilometer (KM):</label><input type="text" id="inKM" value="" oninput="sinkronisasiData()"></div>
+        </div>
+
+        <h2>4. Tambah Suku Cadang / Jasa Service</h2>
+        <div class="form-row">
+            <div>
+                <label>Kategori:</label>
+                <select id="kategori" onchange="pilihKategori()">
+                    <option value="">-- Pilih --</option>
+                    <option value="Toyota">Toyota (75 Parts)</option>
+                    <option value="Mitsubishi">Mitsubishi (75 Parts)</option>
+                    <option value="Suzuki">Suzuki (75 Parts)</option>
+                    <option value="Daihatsu">Daihatsu (75 Parts)</option>
+                    <option value="Jasa">Jasa Service (100 Item)</option>
+                </select>
+            </div>
+            <div>
+                <label>Pilih Item Database:</label>
+                <select id="itemSelect" onchange="pilihItemDatabase()">
+                    <option value="">-- Pilih Kategori Dulu --</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Deskripsi Item / Pekerjaan (Dapat diedit manual):</label>
+            <input type="text" id="inItemNama" placeholder="Pilih dari atas, atau ketik manual...">
+        </div>
+        
+        <div class="form-row">
+            <div><label>Harga Satuan (Rp):</label><input type="number" id="inItemHarga" value="0"></div>
+            <div style="flex: 0.4;"><label>Qty:</label><input type="number" id="inItemQty" value="1" min="1"></div>
+        </div>
+        <button type="button" class="btn-add" onclick="tambahItemKeInvoice()">+ Tambah ke Invoice</button>
+
+        <h2>5. Pengaturan</h2>
+        <div class="form-row">
+            <div><label>PPN (%) jika ada:</label><input type="number" id="inPPN" value="11" min="0" oninput="hitungUlangTotal()"></div>
+        </div>
+        <div class="form-group">
+            <label>Catatan / Ketentuan Garansi:</label>
+            <textarea id="inCatatan" rows="3" oninput="sinkronisasiData()">1. Garansi service jasa berlaku 1 minggu atau 1.000 KM.
+2. Suku cadang yang sudah dibeli tidak dapat ditukar/dikembalikan.
+3. Mohon periksa barang bawaan, kami tidak bertanggung jawab atas kehilangan di dalam kendaraan.</textarea>
+        </div>
+
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+    </div>
+
+    <div class="preview-panel">
+        <div class="invoice-header">
+            <div class="comp-info">
+                <h1>BENGKEL MOBIL MANOKWARI</h1>
+                <p><strong>Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang</strong></p>
+                <p>Jl. Trikora Wosi, Manokwari, Papua Barat 98312</p>
+                <p>Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com</p>
+            </div>
+            <div class="inv-title">
+                <h2>INVOICE</h2>
+                <p>No: <span id="viewNo"></span></p>
+                <p>Tanggal: <span id="viewTanggal"></span></p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-box">
+                <h3>DATA PELANGGAN</h3>
+                <table class="info-table">
+                    <tr><td>Nama</td><td>: <span id="viewNama"></span></td></tr>
+                    <tr><td>Alamat</td><td>: <span id="viewAlamat"></span></td></tr>
+                    <tr><td>No. Telepon</td><td>: <span id="viewTelp"></span></td></tr>
+                </table>
+            </div>
+            <div class="info-box">
+                <h3>DATA KENDARAAN</h3>
+                <table class="info-table">
+                    <tr><td>Merek / Tipe</td><td>: <span id="viewMobil"></span></td></tr>
+                    <tr><td>No. Polisi</td><td>: <span id="viewPlat"></span></td></tr>
+                    <tr><td>Thn / Warna</td><td>: <span id="viewWarna"></span></td></tr>
+                    <tr><td>Kilometer</td><td>: <span id="viewKM"></span></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th width="5%" class="text-center">No</th>
+                    <th width="55%">Deskripsi Pekerjaan / Suku Cadang</th>
+                    <th width="8%" class="text-center">Qty</th>
+                    <th width="14%" class="text-right">Harga Satuan</th>
+                    <th width="14%" class="text-right">Total Harga</th>
+                    <th width="4%" class="text-center no-print">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tabelItemInvoice"></tbody>
+        </table>
+
+        <div class="summary-container">
+            <div class="notes-view">
+                <strong>Catatan:</strong><br>
+                <span id="viewCatatan" style="white-space: pre-line;"></span>
+            </div>
+            <table class="summary-table">
+                <tr><td>Total Jasa Service:</td><td id="viewTotalJasa">Rp 0</td></tr>
+                <tr><td>Total Suku Cadang:</td><td id="viewTotalParts">Rp 0</td></tr>
+                <tr><td>Subtotal:</td><td id="viewSubtotal">Rp 0</td></tr>
+                <tr><td>PPN (<span id="viewPersenPPN">11</span>%):</td><td id="viewTotalPPN">Rp 0</td></tr>
+                <tr class="grand-total-row"><td>GRAND TOTAL:</td><td id="viewGrandTotal">Rp 0</td></tr>
+            </table>
+        </div>
+
+        <div class="sig-section">
+            <div class="sig-box"><p>Hormat Kami,</p><div class="sig-line">Service Advisor</div></div>
+            <div class="sig-box"><p>Mekanik,</p><div class="sig-line">Kepala Mekanik</div></div>
+            <div class="sig-box"><p>Pelanggan,</p><div class="sig-line">Tanda Tangan</div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DATABASE 400+ ITEM (300 Suku Cadang & 100 Jasa)
+    const databaseSukuCadang = {
+        "Toyota": [
+            { nama: "[Toyota] Oli Mesin TMO 10W-40 Synthetic (Galon 4L)", harga: 480000, tipe: "part" },
+            { nama: "[Toyota] Oli Mesin TMO 5W-30 Full Synthetic (Galon 4L)", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Oli Mesin TMO 15W-40 Diesel (Galon 4L)", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Oli Transmisi Manual TMO GL-4 80W-90 (1L)", harga: 95000, tipe: "part" },
+            { nama: "[Toyota] Oli Transmisi Matic TMO ATF T-IV (4L)", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Oli Transmisi Matic TMO CVT Fluid (4L)", harga: 600000, tipe: "part" },
+            { nama: "[Toyota] Oli Gardan TMO GL-5 90 (1L)", harga: 95000, tipe: "part" },
+            { nama: "[Toyota] Filter Oli Avanza/Rush/Terios/Calya", harga: 65000, tipe: "part" },
+            { nama: "[Toyota] Filter Oli Innova/Fortuner/Hilux Diesel", harga: 95000, tipe: "part" },
+            { nama: "[Toyota] Filter Oli Yaris/Vios/Sienta", harga: 75000, tipe: "part" },
+            { nama: "[Toyota] Filter Udara Avanza VVT-i Lama", harga: 160000, tipe: "part" },
+            { nama: "[Toyota] Filter Udara Grand New Avanza/Veloz", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Filter Udara Innova Reborn Diesel", harga: 280000, tipe: "part" },
+            { nama: "[Toyota] Filter Udara Fortuner VRZ", harga: 300000, tipe: "part" },
+            { nama: "[Toyota] Filter Udara Calya/Sigra", harga: 140000, tipe: "part" },
+            { nama: "[Toyota] Filter Kabin / AC Avanza/Innova", harga: 85000, tipe: "part" },
+            { nama: "[Toyota] Filter Solar Fortuner/Innova Diesel", harga: 240000, tipe: "part" },
+            { nama: "[Toyota] Filter Solar Hilux Double Cabin", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Depan Avanza/Xenia", harga: 380000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Depan Innova Reborn", harga: 580000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Depan Fortuner VRZ", harga: 750000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Depan Calya/Agya", harga: 320000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Belakang (Tromol) Avanza", harga: 350000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Belakang (Tromol) Innova", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Belakang Cakram Fortuner", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Piringan Cakram Depan Avanza (Per PC)", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Tromol Belakang Avanza (Per PC)", harga: 600000, tipe: "part" },
+            { nama: "[Toyota] Busi Standar Kijang Kapsul (Set 4pcs)", harga: 140000, tipe: "part" },
+            { nama: "[Toyota] Busi Iridium Avanza/Rush (Set 4pcs)", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Busi Iridium Innova Bensin (Set 4pcs)", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Busi Iridium Calya/Agya (Set 4pcs)", harga: 420000, tipe: "part" },
+            { nama: "[Toyota] Ignition Coil Avanza 1.3", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Fan Belt / V-Belt Avanza 1.3 (VVT-i)", harga: 210000, tipe: "part" },
+            { nama: "[Toyota] Fan Belt Innova Diesel", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Fan Belt Fortuner VRZ", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Timing Belt Set Innova Diesel Lama", harga: 1250000, tipe: "part" },
+            { nama: "[Toyota] Shockbreaker Depan Avanza (Set L/R)", harga: 1650000, tipe: "part" },
+            { nama: "[Toyota] Shockbreaker Belakang Avanza (Set L/R)", harga: 950000, tipe: "part" },
+            { nama: "[Toyota] Shockbreaker Depan Innova (Set L/R)", harga: 1850000, tipe: "part" },
+            { nama: "[Toyota] Shockbreaker Belakang Innova (Set L/R)", harga: 1100000, tipe: "part" },
+            { nama: "[Toyota] Shockbreaker Depan Fortuner (Set L/R)", harga: 2200000, tipe: "part" },
+            { nama: "[Toyota] Tie Rod End Avanza (Set)", harga: 350000, tipe: "part" },
+            { nama: "[Toyota] Long Tie Rod / Rack End Avanza (Set)", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Ball Joint Bawah Avanza (Set)", harga: 480000, tipe: "part" },
+            { nama: "[Toyota] Ball Joint Atas Innova/Fortuner (Set)", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Karet Stabilizer Depan Avanza (Set)", harga: 120000, tipe: "part" },
+            { nama: "[Toyota] Bushing Arm Depan Bawah Avanza", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Link Stabilizer Avanza", harga: 280000, tipe: "part" },
+            { nama: "[Toyota] Engine Mounting Kanan Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Engine Mounting Kiri Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Engine Mounting Belakang/Transmisi Avanza", harga: 380000, tipe: "part" },
+            { nama: "[Toyota] Radiator Assy Avanza Manual", harga: 1450000, tipe: "part" },
+            { nama: "[Toyota] Radiator Coolant TMO (Galon 4L)", harga: 165000, tipe: "part" },
+            { nama: "[Toyota] Motor Extra Fan Avanza", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Water Pump Assy Avanza 1.3", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Thermostat Avanza", harga: 220000, tipe: "part" },
+            { nama: "[Toyota] Selang Radiator Atas Avanza", harga: 120000, tipe: "part" },
+            { nama: "[Toyota] Minyak Rem TMO DOT-3 (300ml)", harga: 55000, tipe: "part" },
+            { nama: "[Toyota] Wiper Blade Set (Kiri & Kanan) Avanza", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Wiper Blade Belakang Avanza", harga: 85000, tipe: "part" },
+            { nama: "[Toyota] Kampas Kopling Set (Clutch Disc) Avanza 1.3", harga: 1350000, tipe: "part" },
+            { nama: "[Toyota] Matahari / Cover Clutch Avanza 1.3", harga: 950000, tipe: "part" },
+            { nama: "[Toyota] Dekrup / Release Bearing Avanza", harga: 350000, tipe: "part" },
+            { nama: "[Toyota] Master Kopling Atas Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Master Kopling Bawah Avanza", harga: 350000, tipe: "part" },
+            { nama: "[Toyota] Laher / Bearing Roda Depan Vios/Yaris", harga: 380000, tipe: "part" },
+            { nama: "[Toyota] Laher Roda Depan Avanza (Dilengkapi ABS)", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Laher Roda Belakang Avanza", harga: 320000, tipe: "part" },
+            { nama: "[Toyota] Seal Kruk As Belakang Avanza", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Packing Tutup Klep Avanza", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Filter Bensin In-Tank Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Motor Pompa Bensin (Fuel Pump) Avanza", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Aki / Baterai NS40ZL (Avanza/Agya)", harga: 950000, tipe: "part" },
+            { nama: "[Toyota] Bohlam Lampu Depan H4 Standar", harga: 65000, tipe: "part" },
+            { nama: "[Toyota] Relay Lampu Kaki 4", harga: 45000, tipe: "part" }
+        ],
+        "Mitsubishi": [
+            { nama: "[Mitsubishi] Oli Mesin MMGO 10W-30 (Galon 5L)", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Oli Mesin MMGO 0W-20 Xpander (4L)", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Oli Transmisi Manual GL-4 80W-90 (1L)", harga: 95000, tipe: "part" },
+            { nama: "[Mitsubishi] Oli Transmisi Matic ATF SP-III (1L)", harga: 140000, tipe: "part" },
+            { nama: "[Mitsubishi] Oli Gardan / Differential GL-5 (1L)", harga: 105000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Oli Pajero Sport / Triton", harga: 125000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Oli Xpander / Mirage", harga: 85000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Oli L300 Diesel", harga: 95000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Udara Pajero Sport / Triton Lama", harga: 320000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Udara All New Pajero", harga: 380000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Udara Xpander", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Udara L300 Diesel", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Solar Triton / Pajero", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Solar L300", harga: 95000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Kabin AC Xpander", harga: 150000, tipe: "part" },
+            { nama: "[Mitsubishi] Filter Kabin AC Pajero", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Depan Pajero Sport", harga: 1250000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Depan Triton Double Cabin", harga: 1150000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Depan Xpander", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Depan L300", harga: 450000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Belakang (Tromol) L300", harga: 450000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Belakang (Tromol) Triton", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Belakang Cakram Pajero", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Piringan Cakram Depan Triton", harga: 950000, tipe: "part" },
+            { nama: "[Mitsubishi] Piringan Cakram Depan Xpander", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Busi Iridium Xpander (Set 4pcs)", harga: 520000, tipe: "part" },
+            { nama: "[Mitsubishi] Busi Standar Mirage (Set 3pcs)", harga: 250000, tipe: "part" },
+            { nama: "[Mitsubishi] Glow Plug / Busi Pemanas L300", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Glow Plug Triton / Pajero", harga: 350000, tipe: "part" },
+            { nama: "[Mitsubishi] Fan Belt Triton / Pajero 2.5", harga: 350000, tipe: "part" },
+            { nama: "[Mitsubishi] Fan Belt Xpander", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Timing Belt Set L300", harga: 1250000, tipe: "part" },
+            { nama: "[Mitsubishi] Timing Belt Set Triton 2.5", harga: 1850000, tipe: "part" },
+            { nama: "[Mitsubishi] Shockbreaker Depan Xpander (Set)", harga: 1850000, tipe: "part" },
+            { nama: "[Mitsubishi] Shockbreaker Belakang Xpander (Set)", harga: 1200000, tipe: "part" },
+            { nama: "[Mitsubishi] Shockbreaker Depan Triton (Set)", harga: 2100000, tipe: "part" },
+            { nama: "[Mitsubishi] Shockbreaker Belakang Triton (Set)", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] Shockbreaker Depan Pajero (Set)", harga: 2400000, tipe: "part" },
+            { nama: "[Mitsubishi] Tie Rod End Pajero Sport / Triton", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Long Tie Rod Xpander", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Ball Joint Bawah Triton 4x4", harga: 750000, tipe: "part" },
+            { nama: "[Mitsubishi] Ball Joint Atas Triton 4x4", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet / Bushing Arm Depan Triton", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Boot As Roda Luar Xpander", harga: 250000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Kopling Set L300", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] Matahari / Cover Clutch L300", harga: 1100000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Kopling Set Triton 2.5", harga: 2200000, tipe: "part" },
+            { nama: "[Mitsubishi] Matahari Triton 2.5", harga: 1800000, tipe: "part" },
+            { nama: "[Mitsubishi] Dekrup Bearing Kopling Triton", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Master Kopling Atas L300", harga: 350000, tipe: "part" },
+            { nama: "[Mitsubishi] Master Kopling Bawah L300", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Radiator Assy L300", harga: 1650000, tipe: "part" },
+            { nama: "[Mitsubishi] Radiator Assy Triton", harga: 2400000, tipe: "part" },
+            { nama: "[Mitsubishi] Radiator Coolant SLLC (4L)", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Selang Radiator Atas L300", harga: 120000, tipe: "part" },
+            { nama: "[Mitsubishi] Water Pump Assy Triton", harga: 1100000, tipe: "part" },
+            { nama: "[Mitsubishi] Thermostat Pajero Sport", harga: 350000, tipe: "part" },
+            { nama: "[Mitsubishi] Minyak Rem DOT-4 (300ml)", harga: 85000, tipe: "part" },
+            { nama: "[Mitsubishi] Laher Roda Depan Xpander (ABS)", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Laher Roda Depan Triton 4x4", harga: 1100000, tipe: "part" },
+            { nama: "[Mitsubishi] Laher Roda Belakang L300", harga: 250000, tipe: "part" },
+            { nama: "[Mitsubishi] Engine Mounting Depan Kanan Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Engine Mounting Belakang Xpander", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Gantungan Kopel L300", harga: 250000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Gantungan Kopel Triton", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Cross Joint Kopel L300", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Cross Joint Kopel Triton", harga: 450000, tipe: "part" },
+            { nama: "[Mitsubishi] Seal Gardan Belakang Triton", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Aki / Baterai N70Z (Triton/Pajero)", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] Aki / Baterai NS60 (Xpander)", harga: 1100000, tipe: "part" },
+            { nama: "[Mitsubishi] Wiper Blade Depan Pajero/Triton", harga: 240000, tipe: "part" },
+            { nama: "[Mitsubishi] Wiper Blade Depan Xpander", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Bohlam Foglamp H11", harga: 120000, tipe: "part" },
+            { nama: "[Mitsubishi] Kabel Speedometer L300", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Switch Atret / Mundur L300", harga: 150000, tipe: "part" }
+        ],
+        "Suzuki": [
+            { nama: "[Suzuki] Oli SGO Ecstar 5W-30 (Galon 4L)", harga: 420000, tipe: "part" },
+            { nama: "[Suzuki] Oli SGO Ecstar 0W-20 (Galon 4L)", harga: 480000, tipe: "part" },
+            { nama: "[Suzuki] Oli SGO Transmisi Manual 75W-90 (1L)", harga: 85000, tipe: "part" },
+            { nama: "[Suzuki] Oli SGO Matic ATF AW-1 (1L)", harga: 125000, tipe: "part" },
+            { nama: "[Suzuki] Oli Gardan SGO GL-5 (1L)", harga: 90000, tipe: "part" },
+            { nama: "[Suzuki] Filter Oli Ertiga/XL7", harga: 60000, tipe: "part" },
+            { nama: "[Suzuki] Filter Oli Carry/Futura/APV", harga: 50000, tipe: "part" },
+            { nama: "[Suzuki] Filter Oli Ignis/Baleno", harga: 65000, tipe: "part" },
+            { nama: "[Suzuki] Filter Udara Ertiga Lama", harga: 145000, tipe: "part" },
+            { nama: "[Suzuki] Filter Udara All New Ertiga/XL7", harga: 165000, tipe: "part" },
+            { nama: "[Suzuki] Filter Udara Carry Pick Up Baru", harga: 135000, tipe: "part" },
+            { nama: "[Suzuki] Filter Udara Ignis", harga: 165000, tipe: "part" },
+            { nama: "[Suzuki] Filter Kabin / AC Ertiga/XL7", harga: 95000, tipe: "part" },
+            { nama: "[Suzuki] Filter Kabin AC Ignis", harga: 110000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Depan Ertiga / XL7", harga: 380000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Depan Carry Pick Up", harga: 220000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Depan APV", harga: 320000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Depan Ignis", harga: 350000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Belakang (Tromol) Ertiga", harga: 350000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Belakang Carry Pick Up", harga: 250000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Rem Belakang Ignis", harga: 320000, tipe: "part" },
+            { nama: "[Suzuki] Piringan Cakram Depan Ertiga", harga: 550000, tipe: "part" },
+            { nama: "[Suzuki] Piringan Cakram Depan Carry", harga: 450000, tipe: "part" },
+            { nama: "[Suzuki] Busi Standar Ertiga/Ignis (Set 4pcs)", harga: 160000, tipe: "part" },
+            { nama: "[Suzuki] Busi Standar Carry/Futura (Set 4pcs)", harga: 110000, tipe: "part" },
+            { nama: "[Suzuki] Busi Iridium XL7 (Set 4pcs)", harga: 480000, tipe: "part" },
+            { nama: "[Suzuki] Ignition Coil APV / Futura Injection", harga: 450000, tipe: "part" },
+            { nama: "[Suzuki] Ignition Coil Ertiga", harga: 550000, tipe: "part" },
+            { nama: "[Suzuki] Fan Belt / V-Belt Ertiga / XL7", harga: 220000, tipe: "part" },
+            { nama: "[Suzuki] Fan Belt Carry/Futura", harga: 120000, tipe: "part" },
+            { nama: "[Suzuki] Kabel Kopling Carry / Futura", harga: 180000, tipe: "part" },
+            { nama: "[Suzuki] Kabel Gas Futura / Carry", harga: 135000, tipe: "part" },
+            { nama: "[Suzuki] Shockbreaker Depan Ertiga (Set)", harga: 1450000, tipe: "part" },
+            { nama: "[Suzuki] Shockbreaker Belakang Ertiga (Set)", harga: 850000, tipe: "part" },
+            { nama: "[Suzuki] Shockbreaker Depan APV (Set)", harga: 1350000, tipe: "part" },
+            { nama: "[Suzuki] Shockbreaker Belakang APV (Set)", harga: 850000, tipe: "part" },
+            { nama: "[Suzuki] Shockbreaker Depan Carry (Set)", harga: 1100000, tipe: "part" },
+            { nama: "[Suzuki] Tie Rod End Carry", harga: 210000, tipe: "part" },
+            { nama: "[Suzuki] Tie Rod End Ertiga", harga: 350000, tipe: "part" },
+            { nama: "[Suzuki] Long Tie Rod / Rack End Ertiga", harga: 420000, tipe: "part" },
+            { nama: "[Suzuki] Ball Joint Bawah APV", harga: 340000, tipe: "part" },
+            { nama: "[Suzuki] Ball Joint Bawah Carry", harga: 280000, tipe: "part" },
+            { nama: "[Suzuki] Bushing Arm Depan Ertiga", harga: 250000, tipe: "part" },
+            { nama: "[Suzuki] Link Stabilizer Ertiga", harga: 220000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Kopling Set Ertiga", harga: 1250000, tipe: "part" },
+            { nama: "[Suzuki] Kampas Kopling Set Carry 1.5", harga: 950000, tipe: "part" },
+            { nama: "[Suzuki] Matahari / Cover Clutch Carry 1.5", harga: 750000, tipe: "part" },
+            { nama: "[Suzuki] Dekrup Bearing Kopling Carry", harga: 250000, tipe: "part" },
+            { nama: "[Suzuki] Master Kopling Atas Ertiga", harga: 450000, tipe: "part" },
+            { nama: "[Suzuki] Radiator Assy Carry / Futura", harga: 1200000, tipe: "part" },
+            { nama: "[Suzuki] Radiator Assy Ertiga Manual", harga: 1550000, tipe: "part" },
+            { nama: "[Suzuki] Coolant Ecstar (Galon 4L)", harga: 175000, tipe: "part" },
+            { nama: "[Suzuki] Water Pump Carry / Katana", harga: 380000, tipe: "part" },
+            { nama: "[Suzuki] Water Pump Ertiga", harga: 550000, tipe: "part" },
+            { nama: "[Suzuki] Thermostat Ertiga", harga: 220000, tipe: "part" },
+            { nama: "[Suzuki] Selang Radiator Bawah Carry", harga: 85000, tipe: "part" },
+            { nama: "[Suzuki] Laher / Bearing Roda Depan Ertiga (ABS)", harga: 450000, tipe: "part" },
+            { nama: "[Suzuki] Laher / Bearing Roda Belakang Ertiga", harga: 380000, tipe: "part" },
+            { nama: "[Suzuki] Laher Roda Depan Carry", harga: 220000, tipe: "part" },
+            { nama: "[Suzuki] Laher Roda Belakang Carry", harga: 180000, tipe: "part" },
+            { nama: "[Suzuki] Engine Mounting Depan Kanan Ertiga", harga: 550000, tipe: "part" },
+            { nama: "[Suzuki] Engine Mounting Carry (Per Pcs)", harga: 180000, tipe: "part" },
+            { nama: "[Suzuki] Karet Wiper Depan XL7 / Ertiga", harga: 160000, tipe: "part" },
+            { nama: "[Suzuki] Wiper Blade Depan Carry", harga: 120000, tipe: "part" },
+            { nama: "[Suzuki] Karet Boot As Roda Luar Ertiga", harga: 180000, tipe: "part" },
+            { nama: "[Suzuki] Cross Joint Kopel Carry", harga: 150000, tipe: "part" },
+            { nama: "[Suzuki] Karet Gantungan Kopel Carry", harga: 180000, tipe: "part" },
+            { nama: "[Suzuki] Seal Kruk As Depan Carry", harga: 85000, tipe: "part" },
+            { nama: "[Suzuki] Minyak Rem SGO DOT-3 (300ml)", harga: 45000, tipe: "part" },
+            { nama: "[Suzuki] Aki / Baterai NS40ZL (Ertiga/Carry)", harga: 950000, tipe: "part" },
+            { nama: "[Suzuki] Motor Fan Radiator Ertiga", harga: 750000, tipe: "part" },
+            { nama: "[Suzuki] Packing Tutup Klep Ertiga", harga: 120000, tipe: "part" },
+            { nama: "[Suzuki] Selang Rem Depan Carry", harga: 110000, tipe: "part" },
+            { nama: "[Suzuki] Switch Temperatur Carry", harga: 125000, tipe: "part" },
+            { nama: "[Suzuki] Bohlam Lampu Rem Belakang Putar", harga: 15000, tipe: "part" }
+        ],
+        "Daihatsu": [
+            { nama: "[Daihatsu] Oli Mesin DGO 10W-40 (Galon 4L)", harga: 410000, tipe: "part" },
+            { nama: "[Daihatsu] Oli Mesin DGO 5W-30 (Galon 4L)", harga: 480000, tipe: "part" },
+            { nama: "[Daihatsu] Oli Transmisi Manual DGO GL-4 (1L)", harga: 85000, tipe: "part" },
+            { nama: "[Daihatsu] Oli Transmisi Matic DGO ATF (1L)", harga: 115000, tipe: "part" },
+            { nama: "[Daihatsu] Oli Gardan DGO GL-5 (1L)", harga: 90000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Oli Gran Max/Luxio/Xenia", harga: 55000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Oli Terios/Rush", harga: 55000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Oli Ayla/Sigra 1.0/1.2", harga: 50000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Udara Xenia 1.0", harga: 110000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Udara Xenia 1.3 / Terios Lama", harga: 140000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Udara All New Terios", harga: 160000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Udara Ayla / Sigra", harga: 120000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Udara Gran Max / Luxio", harga: 135000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Kabin AC Terios / Xenia", harga: 85000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Kabin AC Sigra / Ayla", harga: 75000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Depan Xenia 1.3", harga: 380000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Depan Terios", harga: 420000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Depan Gran Max / Luxio", harga: 320000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Depan Ayla / Sigra", harga: 280000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Belakang (Tromol) Gran Max", harga: 350000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Belakang (Tromol) Xenia", harga: 320000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Rem Belakang Sigra", harga: 280000, tipe: "part" },
+            { nama: "[Daihatsu] Piringan Cakram Depan Xenia", harga: 480000, tipe: "part" },
+            { nama: "[Daihatsu] Piringan Cakram Depan Gran Max", harga: 450000, tipe: "part" },
+            { nama: "[Daihatsu] Busi Standar Xenia/Gran Max (Set 4pcs)", harga: 130000, tipe: "part" },
+            { nama: "[Daihatsu] Busi Iridium Sigra / Ayla (Set 4pcs)", harga: 420000, tipe: "part" },
+            { nama: "[Daihatsu] Busi Iridium Terios Baru (Set 4pcs)", harga: 480000, tipe: "part" },
+            { nama: "[Daihatsu] Fan Belt Terios / Rush", harga: 220000, tipe: "part" },
+            { nama: "[Daihatsu] Fan Belt Gran Max / Luxio", harga: 180000, tipe: "part" },
+            { nama: "[Daihatsu] Fan Belt Sigra / Ayla", harga: 150000, tipe: "part" },
+            { nama: "[Daihatsu] Ignition Coil Xenia 1.3", harga: 480000, tipe: "part" },
+            { nama: "[Daihatsu] Shockbreaker Depan Xenia (Set)", harga: 1550000, tipe: "part" },
+            { nama: "[Daihatsu] Shockbreaker Belakang Xenia (Set)", harga: 850000, tipe: "part" },
+            { nama: "[Daihatsu] Shockbreaker Depan Gran Max (Set)", harga: 1450000, tipe: "part" },
+            { nama: "[Daihatsu] Shockbreaker Belakang Gran Max (Set)", harga: 750000, tipe: "part" },
+            { nama: "[Daihatsu] Shockbreaker Depan Sigra (Set)", harga: 1250000, tipe: "part" },
+            { nama: "[Daihatsu] Tie Rod End Terios (Set)", harga: 380000, tipe: "part" },
+            { nama: "[Daihatsu] Tie Rod End Gran Max", harga: 280000, tipe: "part" },
+            { nama: "[Daihatsu] Long Tie Rod (Rack End) Xenia", harga: 420000, tipe: "part" },
+            { nama: "[Daihatsu] Ball Joint Bawah Gran Max", harga: 320000, tipe: "part" },
+            { nama: "[Daihatsu] Link Stabilizer Terios", harga: 250000, tipe: "part" },
+            { nama: "[Daihatsu] Karet Stabilizer Gran Max", harga: 85000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Kopling Set Gran Max 1.5", harga: 1150000, tipe: "part" },
+            { nama: "[Daihatsu] Matahari / Cover Clutch Gran Max 1.5", harga: 850000, tipe: "part" },
+            { nama: "[Daihatsu] Dekrup Bearing Kopling Gran Max", harga: 280000, tipe: "part" },
+            { nama: "[Daihatsu] Kampas Kopling Set Sigra 1.2", harga: 950000, tipe: "part" },
+            { nama: "[Daihatsu] Kabel Kopling Gran Max", harga: 220000, tipe: "part" },
+            { nama: "[Daihatsu] Radiator Assy Gran Max Manual", harga: 1350000, tipe: "part" },
+            { nama: "[Daihatsu] Radiator Assy Xenia 1.3", harga: 1450000, tipe: "part" },
+            { nama: "[Daihatsu] Coolant DGO (Galon 4L)", harga: 150000, tipe: "part" },
+            { nama: "[Daihatsu] Water Pump Gran Max", harga: 450000, tipe: "part" },
+            { nama: "[Daihatsu] Thermostat Xenia", harga: 180000, tipe: "part" },
+            { nama: "[Daihatsu] Selang Radiator Atas Gran Max", harga: 95000, tipe: "part" },
+            { nama: "[Daihatsu] Motor Fan Radiator Sigra", harga: 650000, tipe: "part" },
+            { nama: "[Daihatsu] Laher / Bearing Roda Depan Sirion/Ayla", harga: 320000, tipe: "part" },
+            { nama: "[Daihatsu] Laher Roda Depan Gran Max", harga: 350000, tipe: "part" },
+            { nama: "[Daihatsu] Laher Roda Belakang Gran Max", harga: 280000, tipe: "part" },
+            { nama: "[Daihatsu] Engine Mounting Ayla Kanan", harga: 380000, tipe: "part" },
+            { nama: "[Daihatsu] Engine Mounting Gran Max (Per Pcs)", harga: 350000, tipe: "part" },
+            { nama: "[Daihatsu] Karet Boot As Roda Gran Max Luar", harga: 140000, tipe: "part" },
+            { nama: "[Daihatsu] Seal Gardan Depan Terios", harga: 180000, tipe: "part" },
+            { nama: "[Daihatsu] Wiper Blade Sigra Set (Kiri Kanan)", harga: 150000, tipe: "part" },
+            { nama: "[Daihatsu] Wiper Blade Gran Max Set", harga: 140000, tipe: "part" },
+            { nama: "[Daihatsu] Minyak Rem DGO DOT-3 (300ml)", harga: 45000, tipe: "part" },
+            { nama: "[Daihatsu] Aki / Baterai NS40Z (Xenia/Gran Max)", harga: 950000, tipe: "part" },
+            { nama: "[Daihatsu] Packing Carter Oli Gran Max", harga: 120000, tipe: "part" },
+            { nama: "[Daihatsu] Filter Pompa Bensin (Fuel Pump) Xenia", harga: 250000, tipe: "part" },
+            { nama: "[Daihatsu] Bohlam Sen / Reting Tancap", harga: 15000, tipe: "part" },
+            { nama: "[Daihatsu] Switch Oli Mesin Xenia", harga: 110000, tipe: "part" },
+            { nama: "[Daihatsu] Karet Pedal Kopling / Rem", harga: 25000, tipe: "part" }
+        ],
+        "Jasa": [
+            // Perawatan Berkala (10)
+            { nama: "Jasa Service Berkala 10.000 KM", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 20.000 KM", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 30.000 KM", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 40.000 KM (Service Besar)", harga: 650000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 50.000 KM", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 60.000 KM", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 70.000 KM", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 80.000 KM (Service Besar)", harga: 750000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 90.000 KM", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Service Berkala 100.000 KM", harga: 850000, tipe: "jasa" },
+            
+            // Mesin & Ganti Oli (25)
+            { nama: "Jasa Ganti Oli Mesin & Filter", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Kuras & Ganti Oli Transmisi Manual", harga: 75000, tipe: "jasa" },
+            { nama: "Jasa Kuras & Ganti Oli Transmisi Matic (ATF)", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Ganti Oli Gardan", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Tune Up Mesin Bensin", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Tune Up Mesin Diesel", harga: 400000, tipe: "jasa" },
+            { nama: "Jasa Pembersihan Injektor / Purging Diesel", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Kalibrasi Injektor", harga: 850000, tipe: "jasa" },
+            { nama: "Jasa Carbon Clean Ruang Bakar", harga: 300000, tipe: "jasa" },
+            { nama: "Jasa Turun Mesin Setengah (Top Overhaul)", harga: 2500000, tipe: "jasa" },
+            { nama: "Jasa Turun Mesin Total (General Overhaul)", harga: 4500000, tipe: "jasa" },
+            { nama: "Jasa Ganti Timing Belt", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Ganti V-Belt / Fan Belt", harga: 75000, tipe: "jasa" },
+            { nama: "Jasa Ganti Water Pump", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Kuras Air Radiator", harga: 85000, tipe: "jasa" },
+            { nama: "Jasa Las / Perbaikan Radiator Bocor", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Ganti Engine Mounting (Per Titik)", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Ganti Packing Karter / Silinder Head", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Ganti Busi / Pemanas", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Ganti Thermostat", harga: 120000, tipe: "jasa" },
+            { nama: "Jasa Ganti Fuel Pump / Pompa Bensin", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Turun / Kuras Tangki BBM", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Ganti Filter Udara", harga: 25000, tipe: "jasa" },
+            { nama: "Jasa Ganti Filter Solar", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Cek Kebocoran Oli Mesin", harga: 100000, tipe: "jasa" },
+
+            // Kaki-kaki, Roda & Suspensi (25)
+            { nama: "Jasa Spooring Roda Depan & Belakang", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Balancing Roda (Per Ban)", harga: 40000, tipe: "jasa" },
+            { nama: "Jasa Rotasi Ban (Per Ban)", harga: 20000, tipe: "jasa" },
+            { nama: "Jasa Tambal Ban Tubeless (Per Lubang)", harga: 35000, tipe: "jasa" },
+            { nama: "Jasa Ganti Ban (Lepas Pasang Velg)", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Ganti Shockbreaker Depan (Per Sisi)", harga: 175000, tipe: "jasa" },
+            { nama: "Jasa Ganti Shockbreaker Belakang (Per Sisi)", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Ganti Per Suspensi", harga: 200000, tipe: "jasa" },
+            { nama: "Jasa Ganti Tie Rod / Long Tie Rod (Per Sisi)", harga: 120000, tipe: "jasa" },
+            { nama: "Jasa Ganti Ball Joint (Per Sisi)", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Ganti Laher / Bearing Roda Depan", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Ganti Laher / Bearing Roda Belakang", harga: 200000, tipe: "jasa" },
+            { nama: "Jasa Press Bushing Arm (Per Titik)", harga: 100000, tipe: "jasa" },
+            { nama: "Jasa Bongkar Pasang Rack Steer (Power Steering)", harga: 850000, tipe: "jasa" },
+            { nama: "Jasa Ganti Oli Power Steering", harga: 100000, tipe: "jasa" },
+            { nama: "Jasa Kuras Minyak Power Steering", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Servis Pompa Power Steering Bocor", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Ganti Karet Boot As Roda / Drive Shaft", harga: 180000, tipe: "jasa" },
+            { nama: "Jasa Ganti Karet Stabilizer", harga: 80000, tipe: "jasa" },
+            { nama: "Jasa Bongkar Pasang Gardan (Differential)", harga: 1200000, tipe: "jasa" },
+            { nama: "Jasa Ganti Sil Roda Gardan Bocor", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Las / Perbaikan Sasis Patah", harga: 1500000, tipe: "jasa" },
+            { nama: "Jasa Setel Kelurusan Stir / Kemudi", harga: 75000, tipe: "jasa" },
+            { nama: "Jasa Ganti Baut Roda Dol/Patah (Per Baut)", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Cek Kelayakan Kaki-kaki (Inspeksi)", harga: 100000, tipe: "jasa" },
+
+            // Rem / Brake System (15)
+            { nama: "Jasa Ganti Kampas Rem Depan (Cakram)", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Ganti Kampas Rem Belakang (Tromol)", harga: 180000, tipe: "jasa" },
+            { nama: "Jasa Pembersihan & Penyetelan Rem 4 Roda", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Kuras Minyak Rem (Bleeding)", harga: 120000, tipe: "jasa" },
+            { nama: "Jasa Bubut Piringan Cakram / Rotor (Per PC)", harga: 200000, tipe: "jasa" },
+            { nama: "Jasa Bubut Tromol Belakang (Per PC)", harga: 220000, tipe: "jasa" },
+            { nama: "Jasa Overhaul Kaliper Rem Macet (Per Sisi)", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Ganti Master Rem Atas (Brake Master Cylinder)", harga: 300000, tipe: "jasa" },
+            { nama: "Jasa Ganti Master Rem Bawah (Wheel Cylinder)", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Ganti Selang Rem / Pipa Rem", harga: 100000, tipe: "jasa" },
+            { nama: "Jasa Servis Booster Rem", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Setel Rem Tangan / Handbrake", harga: 80000, tipe: "jasa" },
+            { nama: "Jasa Ganti Kabel Rem Tangan", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Ganti Switch Lampu Rem", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Pengecekan Sistem ABS", harga: 250000, tipe: "jasa" },
+
+            // Kelistrikan & AC (15)
+            { nama: "Jasa Cek & Scan Komputer (Scanner OBD)", harga: 200000, tipe: "jasa" },
+            { nama: "Jasa Tambah Freon AC R134a", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Isi Ulang Freon Kuras Total AC", harga: 450000, tipe: "jasa" },
+            { nama: "Jasa Servis Kompresor AC", harga: 650000, tipe: "jasa" },
+            { nama: "Jasa Cuci Evaporator AC (Tanpa Bongkar Dasbor)", harga: 400000, tipe: "jasa" },
+            { nama: "Jasa Cuci Evaporator AC (Bongkar Dasbor Total)", harga: 1500000, tipe: "jasa" },
+            { nama: "Jasa Ganti Filter Kabin AC", harga: 30000, tipe: "jasa" },
+            { nama: "Jasa Ganti Aki (Baterai)", harga: 50000, tipe: "jasa" },
+            { nama: "Jasa Servis Alternator (Dinamo Ampere)", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Servis Motor Starter (Dinamo Starter)", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Urut Kabel Konslet / Kebakaran Ringan", harga: 850000, tipe: "jasa" },
+            { nama: "Jasa Pasang Klakson Keong / Relay", harga: 120000, tipe: "jasa" },
+            { nama: "Jasa Ganti Bohlam Lampu Utama (Per Sisi)", harga: 35000, tipe: "jasa" },
+            { nama: "Jasa Pasang Alarm / Central Lock System", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Ganti Sekring (Fuse) Konslet", harga: 25000, tipe: "jasa" },
+
+            // Transmisi, Kopling & Lainnya (10)
+            { nama: "Jasa Turun Transmisi / Ganti Kopling Set (Mobil RWD)", harga: 850000, tipe: "jasa" },
+            { nama: "Jasa Turun Transmisi / Ganti Kopling Set (Mobil FWD)", harga: 1200000, tipe: "jasa" },
+            { nama: "Jasa Ganti Master Kopling Atas", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Ganti Master Kopling Bawah", harga: 150000, tipe: "jasa" },
+            { nama: "Jasa Overhaul Transmisi Manual", harga: 2000000, tipe: "jasa" },
+            { nama: "Jasa Ganti Karet Wiper Depan/Belakang", harga: 25000, tipe: "jasa" },
+            { nama: "Jasa Poles Kaca Lampu Buram", harga: 350000, tipe: "jasa" },
+            { nama: "Jasa Cuci Mesin (Engine Detailing)", harga: 250000, tipe: "jasa" },
+            { nama: "Jasa Las Knalpot / Ganti Pipa Exhaust", harga: 200000, tipe: "jasa" },
+            { nama: "Jasa Home Service (Biaya Kedatangan/Transport)", harga: 150000, tipe: "jasa" }
+        ]
+    };
+
+    let listItemInvoice = [];
+
+    document.getElementById('inTanggal').valueAsDate = new Date();
+
+    function sinkronisasiData() {
+        document.getElementById("viewNo").innerText = document.getElementById("inNo").value;
+        const tglValue = document.getElementById("inTanggal").value;
+        if(tglValue) {
+            const [y, m, d] = tglValue.split("-");
+            document.getElementById("viewTanggal").innerText = `${d}/${m}/${y}`;
+        }
+        document.getElementById("viewNama").innerText = document.getElementById("inNama").value || "-";
+        document.getElementById("viewAlamat").innerText = document.getElementById("inAlamat").value || "-";
+        document.getElementById("viewTelp").innerText = document.getElementById("inTelp").value || "-";
+        document.getElementById("viewMobil").innerText = document.getElementById("inMobil").value || "-";
+        document.getElementById("viewPlat").innerText = document.getElementById("inPlat").value || "-";
+        document.getElementById("viewWarna").innerText = document.getElementById("inWarna").value || "-";
+        document.getElementById("viewKM").innerText = document.getElementById("inKM").value || "-";
+        document.getElementById("viewCatatan").innerText = document.getElementById("inCatatan").value;
+    }
+
+    function pilihKategori() {
+        const kat = document.getElementById("kategori").value;
+        const selectItem = document.getElementById("itemSelect");
+        selectItem.innerHTML = '<option value="">-- Pilih Item --</option>';
+
+        if (kat && databaseSukuCadang[kat]) {
+            databaseSukuCadang[kat].forEach((item, idx) => {
+                let opt = document.createElement("option");
+                opt.value = idx;
+                opt.innerText = `${item.nama} - Rp ${item.harga.toLocaleString('id-ID')}`;
+                selectItem.appendChild(opt);
+            });
+        }
+    }
+
+    function pilihItemDatabase() {
+        const kat = document.getElementById("kategori").value;
+        const idx = document.getElementById("itemSelect").value;
+        if (kat && idx !== "") {
+            const itemTerpilih = databaseSukuCadang[kat][idx];
+            document.getElementById("inItemNama").value = itemTerpilih.nama;
+            document.getElementById("inItemHarga").value = itemTerpilih.harga;
+        }
+    }
+
+    function tambahItemKeInvoice() {
+        const nama = document.getElementById("inItemNama").value;
+        const harga = parseFloat(document.getElementById("inItemHarga").value);
+        const qty = parseInt(document.getElementById("inItemQty").value);
+        const kat = document.getElementById("kategori").value;
+
+        if (!nama || isNaN(harga) || harga < 0 || isNaN(qty) || qty <= 0) {
+            alert("Isi deskripsi, harga, dan Qty dengan benar!");
+            return;
+        }
+
+        let tipe = "part";
+        if(kat === "Jasa") tipe = "jasa";
+
+        listItemInvoice.push({ nama, harga, qty, tipe });
+        
+        document.getElementById("inItemNama").value = "";
+        document.getElementById("inItemHarga").value = "0";
+        document.getElementById("inItemQty").value = "1";
+        
+        tampilkanTabelInvoice();
+    }
+
+    function hapusItemInvoice(index) {
+        listItemInvoice.splice(index, 1);
+        tampilkanTabelInvoice();
+    }
+
+    function tampilkanTabelInvoice() {
+        const tbody = document.getElementById("tabelItemInvoice");
+        tbody.innerHTML = "";
+        let totalJasa = 0, totalParts = 0;
+
+        listItemInvoice.forEach((item, index) => {
+            const totalBaris = item.harga * item.qty;
+            if(item.tipe === "jasa") totalJasa += totalBaris; else totalParts += totalBaris;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td class="text-center">${index + 1}</td>
+                <td>${item.nama}</td>
+                <td class="text-center">${item.qty}</td>
+                <td class="text-right">${item.harga.toLocaleString('id-ID')}</td>
+                <td class="text-right">${totalBaris.toLocaleString('id-ID')}</td>
+                <td class="text-center no-print"><button class="btn-del-item" onclick="hapusItemInvoice(${index})">X</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        const subtotal = totalJasa + totalParts;
+        const persenPPN = parseFloat(document.getElementById("inPPN").value) || 0;
+        const nominalPPN = (subtotal * persenPPN) / 100;
+        const grandTotal = subtotal + nominalPPN;
+
+        document.getElementById("viewTotalJasa").innerText = "Rp " + totalJasa.toLocaleString('id-ID');
+        document.getElementById("viewTotalParts").innerText = "Rp " + totalParts.toLocaleString('id-ID');
+        document.getElementById("viewSubtotal").innerText = "Rp " + subtotal.toLocaleString('id-ID');
+        document.getElementById("viewPersenPPN").innerText = persenPPN;
+        document.getElementById("viewTotalPPN").innerText = "Rp " + nominalPPN.toLocaleString('id-ID');
+        document.getElementById("viewGrandTotal").innerText = "Rp " + grandTotal.toLocaleString('id-ID');
+    }
+
+    function hitungUlangTotal() { tampilkanTabelInvoice(); }
+
+    sinkronisasiData();
+    tampilkanTabelInvoice();
+</script>
+</body>
+</html>
