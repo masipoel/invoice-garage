@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Dinamis & Bluetooth</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Presisi Identik</title>
     <style>
         /* ========================================================
            GLOBAL STYLES & INPUT PANEL
@@ -28,7 +28,7 @@
         .btn-bt-print:hover { background-color: #d35400; }
 
         /* ========================================================
-           TEMPLATE 1: DESAIN ASLI A4 (DEFAULT)
+           KERTAS A4: TEMPLATE 1, 3, 5
            ======================================================== */
         .preview-panel { width: 21cm; min-height: 29.7cm; background: #fff; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: 0.3s all; }
         .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
@@ -61,9 +61,6 @@
         .sig-box { width: 30%; font-size: 11px; color: #333;}
         .sig-line { margin-top: 50px; border-top: 1px solid #333; padding-top: 3px; font-weight: bold; }
 
-        /* ========================================================
-           TEMPLATE 3: KLASIK / DOT MATRIX (A4 Kertas Bon)
-           ======================================================== */
         .theme-3 { font-family: 'Courier New', Courier, monospace; }
         .theme-3 .comp-info h1 { color: #000; font-size: 22px; letter-spacing: -1px; }
         .theme-3 .invoice-header { border-bottom: 2px dashed #000; }
@@ -74,9 +71,6 @@
         .theme-3 .grand-total-row { background-color: transparent; border-top: 2px dashed #000; border-bottom: 2px dashed #000; }
         .theme-3 .sig-line { border-top: 1px dashed #000; }
 
-        /* ========================================================
-           TEMPLATE 5: MINIMALIS CLEAN (A4 Abu-abu Elegan)
-           ======================================================== */
         .theme-5 { color: #555; }
         .theme-5 .comp-info h1 { color: #333; font-weight: 300; letter-spacing: 2px;}
         .theme-5 .invoice-header { border-bottom: 1px solid #eee; margin-bottom: 30px;}
@@ -89,47 +83,71 @@
         .theme-5 .sig-line { border-top: 1px solid #ccc; color: #777;}
 
         /* ========================================================
-           GLOBAL THERMAL RULES (80mm width = approx 302px)
+           KERTAS THERMAL 80mm: LAYOUT IDENTIK DENGAN PRINTER
            ======================================================== */
-        .thermal { width: 80mm !important; min-height: auto !important; padding: 10px !important; font-family: 'Courier New', Courier, monospace !important; margin: 0 auto; color: #000 !important; font-size: 11px !important; }
-        .thermal .invoice-header { display: block; text-align: center; border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 10px; }
-        .thermal .comp-info h1 { font-size: 16px; margin: 0; color: #000; }
+        .thermal { width: 78mm !important; min-height: auto !important; padding: 5mm !important; font-family: 'Courier New', Courier, monospace !important; margin: 0 auto; color: #000 !important; font-size: 11px !important; }
+        .thermal .invoice-header { display: block; text-align: center; padding-bottom: 5px; margin-bottom: 10px; border-bottom: 1px dashed #000; }
+        .thermal .comp-info h1 { margin: 0; color: #000; font-size: 16px; font-weight: bold;}
         .thermal .comp-info p { font-size: 10px; margin: 2px 0; color: #000; }
-        .thermal .inv-title { text-align: center; margin-top: 10px; }
+        .thermal .inv-title { text-align: center; margin-top: 5px; }
         .thermal .inv-title h2 { font-size: 14px; margin: 0; color: #000; }
         .thermal .inv-title p { margin: 0; font-weight: normal; font-size: 10px; }
+        
+        /* Ubah layout Pelanggan jadi menumpuk rata kiri */
         .thermal .info-section { display: block; margin-bottom: 10px; }
-        .thermal .info-box { width: 100%; border: none; padding: 0; margin-bottom: 5px; background: none;}
-        .thermal .info-box h3 { font-size: 11px; margin: 0; border-bottom: 1px dashed #000; padding-bottom: 2px; color:#000; background: none;}
+        .thermal .info-box { width: 100%; border: none; padding: 0; margin-bottom: 8px; background: none;}
+        .thermal .info-box h3 { font-size: 11px; margin: 0; padding-bottom: 2px; color:#000; background: none; border-bottom: none; font-weight: bold;}
         .thermal .info-table td { font-size: 10px; padding: 1px 0; color:#000; }
-        .thermal .items-table { font-size: 10px; margin-bottom: 10px; }
-        .thermal .items-table th { background: none; color: #000; border: none; border-bottom: 1px dashed #000; padding: 4px 2px; }
+        .thermal .info-table td:first-child { width: 75px; font-weight: normal;}
+        
+        .thermal .items-table { font-size: 10px; margin-bottom: 10px; width: 100%; }
+        .thermal .items-table th { background: none; color: #000; border: none; padding: 4px 2px; text-align: left; border-bottom: 1px dashed #000;}
         .thermal .items-table td { border: none; padding: 4px 2px; color: #000; }
-        .thermal .items-table th:nth-child(4), .thermal .items-table td:nth-child(4) { display: none; }
+        .thermal .items-table th:nth-child(4), .thermal .items-table td:nth-child(4) { display: none; } /* Sembunyikan harga satuan */
+        
         .thermal .summary-container { display: block; }
-        .thermal .notes-view { width: 100%; font-size: 9px; margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 5px; }
+        .thermal .notes-view { width: 100%; font-size: 10px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px dashed #000;}
         .thermal .summary-table { width: 100%; }
         .thermal .summary-table td { font-size: 10px; color:#000; }
-        .thermal .grand-total-row { background: none; border-top: 1px dashed #000; border-bottom: 1px dashed #000; font-size: 12px; }
-        .thermal .sig-section { display: block; margin-top: 10px; text-align: center; }
-        .thermal .sig-box { width: 100%; margin-bottom: 10px; font-size: 10px; }
-        .thermal .sig-line { margin-top: 25px; border-top: 1px dashed #000; width: 60%; margin-left: auto; margin-right: auto; }
+        .thermal .summary-table td:first-child { text-align: left; font-weight: normal;} /* Format Kasir Rata Kiri */
+        .thermal .summary-table td:last-child { text-align: right; }
+        .thermal .grand-total-row { background: none; font-size: 12px; border-top: 1px dashed #000; border-bottom: 1px dashed #000;}
+        .thermal .grand-total-row td:first-child { font-weight: bold; }
+        
+        /* Tanda Tangan: Sejajar kiri Kanan, 1 di Bawah Tengah (Persis Printout ESC/POS) */
+        .thermal .sig-section { display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 10px; }
+        .thermal .sig-box { width: 45%; margin-bottom: 10px; font-size: 10px; text-align: left; }
+        .thermal .sig-box:last-child { width: 100%; text-align: center; margin-top: 10px; }
+        .thermal .sig-line { margin-top: 25px; border-top: 1px dashed #000; width: 90%; margin-left: 0; }
+        .thermal .sig-box:last-child .sig-line { margin-left: auto; margin-right: auto; width: 50%; }
 
-        /* THERMAL THEME VARIANTS */
-        .theme-thermal-1 { }
-        .theme-thermal-2 { border-style: dotted !important; }
-        .theme-thermal-2 .invoice-header, .theme-thermal-2 .info-box h3, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view, .theme-thermal-2 .grand-total-row, .theme-thermal-2 .sig-line { border-bottom-style: dotted; border-top-style: dotted; }
-        .theme-thermal-3 { font-family: Arial, sans-serif !important; }
-        .theme-thermal-3 .comp-info h1 { font-weight: 900; }
-        .theme-thermal-3 .grand-total-row { border-top: 2px solid #000; border-bottom: 2px solid #000; font-weight: bold; }
+        /* ========================================================
+           KERTAS THERMAL 80mm: VARIASI TEMPLATE
+           ======================================================== */
+        /* THERMAL 1 (Standar - Garis Putus/Dashed) */
+        .theme-thermal-1 .invoice-header, .theme-thermal-1 .items-table th, .theme-thermal-1 .notes-view, .theme-thermal-1 .sig-line { border-bottom-style: dashed; }
+        .theme-thermal-1 .grand-total-row { border-top-style: dashed; border-bottom-style: dashed; }
 
+        /* THERMAL 2 (Minimalis - Garis Titik/Dotted) */
+        .theme-thermal-2 .comp-info h1 { font-size: 14px; font-weight: normal; }
+        .theme-thermal-2 .invoice-header, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view, .theme-thermal-2 .sig-line { border-bottom-style: dotted !important; }
+        .theme-thermal-2 .grand-total-row { border-top-style: dotted !important; border-bottom-style: dotted !important; }
+
+        /* THERMAL 3 (Modern - Garis Ganda/Tebal & Teks Bold) */
+        .theme-thermal-3 .comp-info h1 { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+        .theme-thermal-3 .items-table td:nth-child(2) { font-weight: bold; }
+        .theme-thermal-3 .invoice-header, .theme-thermal-3 .items-table th, .theme-thermal-3 .notes-view, .theme-thermal-3 .sig-line { border-bottom: 2px solid #000 !important; }
+        .theme-thermal-3 .grand-total-row { border-top: 2px solid #000 !important; border-bottom: 2px solid #000 !important; font-weight: 900; font-size: 13px;}
+
+        /* MEDIA PRINT UNTUK OS / DRIVER PRINTER KABEL */
         @media print {
-            body { background-color: #fff; padding: 0; }
+            body { background-color: #fff; padding: 0; margin: 0; }
             .input-panel { display: none; }
-            .app-container { display: block; }
-            .preview-panel { box-shadow: none; margin: 0; padding: 0; }
-            .preview-panel:not(.thermal) { width: 100%; min-height: auto; }
-            .thermal { margin: 0; padding: 0 !important; width: 80mm !important; }
+            .app-container { display: block; margin: 0; padding: 0; }
+            .preview-panel { box-shadow: none; margin: 0; border: none; }
+            .preview-panel:not(.thermal) { width: 100%; min-height: auto; padding: 0; }
+            .thermal { margin: 0 !important; padding: 0 !important; width: 78mm !important; }
+            @page { margin: 0; }
             .no-print { display: none; }
         }
     </style>
@@ -150,7 +168,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Pilih Template Invoice Layar/A4:</label>
+            <label>Pilih Template Invoice (Otomatis Tersinkron):</label>
             <select id="inTemplate" onchange="ubahTemplate()">
                 <optgroup label="Kertas A4 (Standar)">
                     <option value="theme-1">A4 - Template 1 (Original Resmi)</option>
@@ -158,9 +176,9 @@
                     <option value="theme-5">A4 - Template 5 (Minimalis Clean)</option>
                 </optgroup>
                 <optgroup label="Kertas Thermal 80mm (Struk Kasir)">
-                    <option value="theme-thermal-1 thermal">Thermal 1 - Struk Standar (Dashed)</option>
-                    <option value="theme-thermal-2 thermal">Thermal 2 - Struk Minimalis (Dotted)</option>
-                    <option value="theme-thermal-3 thermal">Thermal 3 - Struk Modern (Bold)</option>
+                    <option value="theme-thermal-1 thermal">Thermal 1 - Struk Standar (Garis Dashed)</option>
+                    <option value="theme-thermal-2 thermal">Thermal 2 - Struk Minimalis (Garis Dotted)</option>
+                    <option value="theme-thermal-3 thermal">Thermal 3 - Struk Modern (Garis Solid & Bold)</option>
                 </optgroup>
             </select>
         </div>
@@ -236,25 +254,20 @@
 3. Periksa barang bawaan anda.</textarea>
         </div>
 
-        <button class="btn-print" onclick="window.print()">🖨️ Cetak PDF / Printer A4 Biasa</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak via Sistem (Untuk Printer A4 & Thermal USB)</button>
 
         <hr style="border: 1px solid #eee; margin: 20px 0;">
         
-        <!-- BLOK PRINTER BLUETOOTH THERMAL -->
         <div style="background: #fbfbfb; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
-            <h3 style="margin-top: 0; font-size: 14px; color: #8e44ad;">Mode Printer Kasir (Bluetooth)</h3>
+            <h3 style="margin-top: 0; font-size: 14px; color: #8e44ad;">Cetak NirKabel (Printer Bluetooth)</h3>
             <p id="statusPrinter" style="font-size: 12px; color: #e74c3c; margin: 0 0 10px 0; font-weight: bold;">Status: Belum Terhubung</p>
             
-            <!-- Tombol 1: Hubungkan -->
             <button class="btn-bt-connect" id="btnConnect" onclick="hubungkanPrinter()">📡 Pindai & Hubungkan Printer</button>
-            
-            <!-- Tombol 2: Cetak (Akan muncul jika sudah terhubung) -->
-            <button class="btn-bt-print" id="btnPrintThermal" onclick="cetakStrukThermal()">🖨️ Cetak Struk Thermal</button>
+            <button class="btn-bt-print" id="btnPrintThermal" onclick="cetakStrukThermal()">🖨️ Cetak Struk Thermal (Sesuai Template)</button>
         </div>
 
     </div>
 
-    <!-- AREA PREVIEW / CETAK -->
     <div class="preview-panel theme-1" id="areaCetak">
         <div class="invoice-header">
             <div class="comp-info">
@@ -279,7 +292,7 @@
                     <tr><td>No. Telepon</td><td>: <span id="viewTelp"></span></td></tr>
                 </table>
             </div>
-            <div class="info-box">
+            <div class="info-box" style="margin-top: 5px;">
                 <h3>DATA KENDARAAN</h3>
                 <table class="info-table">
                     <tr><td>Merek / Tipe</td><td>: <span id="viewMobil"></span></td></tr>
@@ -293,9 +306,9 @@
         <table class="items-table">
             <thead>
                 <tr>
-                    <th width="5%" class="text-center">No</th>
-                    <th width="55%">Deskripsi Item/Jasa</th>
-                    <th width="8%" class="text-center">Qty</th>
+                    <th width="5%" class="text-left">No</th>
+                    <th width="55%" class="text-left">Deskripsi</th>
+                    <th width="8%" class="text-right">Qty</th>
                     <th width="14%" class="text-right">Hrg Satuan</th>
                     <th width="14%" class="text-right">Total</th>
                     <th width="4%" class="text-center no-print">Aksi</th>
@@ -313,7 +326,7 @@
                 <tr><td>Total Jasa Service:</td><td id="viewTotalJasa">Rp 0</td></tr>
                 <tr><td>Total Suku Cadang:</td><td id="viewTotalParts">Rp 0</td></tr>
                 <tr><td>Subtotal:</td><td id="viewSubtotal">Rp 0</td></tr>
-                <tr><td>PPN (<span id="viewPersenPPN">11</span>%):</td><td id="viewTotalPPN">Rp 0</td></tr>
+                <tr><td id="labelPPN">PPN (11%):</td><td id="viewTotalPPN">Rp 0</td></tr>
                 <tr class="grand-total-row"><td>GRAND TOTAL:</td><td id="viewGrandTotal">Rp 0</td></tr>
             </table>
         </div>
@@ -351,15 +364,14 @@
 
 
     // =======================================================
-    // 2. SISTEM PRINTER BLUETOOTH THERMAL (PISAH TOMBOL & DINAMIS TEMPLATE)
+    // 2. SISTEM PRINTER BLUETOOTH THERMAL (IDENTIK LAYAR)
     // =======================================================
     let globalBluetoothDevice = null;
     let globalPrintCharacteristic = null;
 
-    // A. Fungsi Pindai dan Hubungkan
     async function hubungkanPrinter() {
         if (!navigator.bluetooth) {
-            alert("Browser tidak mendukung API Bluetooth Web.\n\nGunakan Google Chrome (PC/Android) dengan HTTPS.");
+            alert("Browser tidak mendukung API Bluetooth Web.\n\nGunakan Google Chrome (PC/Android) dengan HTTPS/Localhost.");
             return;
         }
 
@@ -368,11 +380,7 @@
             
             const device = await navigator.bluetooth.requestDevice({
                 acceptAllDevices: true,
-                optionalServices: [
-                    '000018f0-0000-1000-8000-00805f9b34fb', 
-                    'e7810a71-73ae-499d-8c15-faa9aef0c3f2', 
-                    '0000fee7-0000-1000-8000-00805f9b34fb'  
-                ]
+                optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', 'e7810a71-73ae-499d-8c15-faa9aef0c3f2', '0000fee7-0000-1000-8000-00805f9b34fb']
             });
 
             document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #f39c12;'>Menghubungkan ke " + device.name + "...</span>";
@@ -392,9 +400,7 @@
                 if (foundCharacteristic) break;
             }
 
-            if (!foundCharacteristic) {
-                throw new Error("Layanan 'Write' tidak ditemukan pada perangkat ini.");
-            }
+            if (!foundCharacteristic) throw new Error("Layanan 'Write' tidak ditemukan.");
 
             globalBluetoothDevice = device;
             globalPrintCharacteristic = foundCharacteristic;
@@ -414,18 +420,15 @@
         }
     }
 
-    // Penanganan jika koneksi terputus
     function onPrinterTerputus() {
         globalBluetoothDevice = null;
         globalPrintCharacteristic = null;
-        
         document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #e74c3c; font-weight: bold;'>Belum Terhubung / Terputus</span>";
         document.getElementById('btnConnect').innerText = "📡 Pindai & Hubungkan Printer";
         document.getElementById('btnConnect').style.backgroundColor = "#8e44ad";
         document.getElementById('btnPrintThermal').style.display = "none";
     }
 
-    // B. Fungsi Cetak Struk
     async function cetakStrukThermal() {
         if (!globalPrintCharacteristic) {
             alert("Printer belum terhubung. Silakan klik tombol Pindai & Hubungkan terlebih dahulu.");
@@ -434,7 +437,7 @@
 
         try {
             const escposData = buildESCPOSTemplate();
-            const chunkSize = 100; // Kirim data per 100 bytes
+            const chunkSize = 100; // Kirim data per 100 bytes untuk stabilitas Bluetooth
             
             for (let i = 0; i < escposData.length; i += chunkSize) {
                 const chunk = escposData.slice(i, i + chunkSize);
@@ -444,8 +447,6 @@
                     await globalPrintCharacteristic.writeValueWithoutResponse(chunk);
                 }
             }
-
-            alert("Struk berhasil dikirim ke printer sesuai template yang dipilih!");
         } catch (error) {
             console.error(error);
             alert("Gagal mencetak struk.\nKoneksi mungkin terputus. Silakan hubungkan ulang.\n\nError: " + error.message);
@@ -453,7 +454,7 @@
         }
     }
 
-    // Fungsi konversi bahasa mesin ESC/POS YANG MENYESUAIKAN TEMPLATE PILIHAN
+    // FUNGSI KONVERSI ESC/POS YANG IDENTIK 100% DENGAN LAYOUT LAYAR
     function buildESCPOSTemplate() {
         let printData = new Uint8Array();
         const encoder = new TextEncoder();
@@ -466,10 +467,10 @@
         }
         function addTxt(text) { addCmd(encoder.encode(text)); }
 
-        // Menganalisa Template Apa Yang Sedang Dipilih Oleh Pengguna
+        // Membaca Pilihan Template Saat Ini
         const selectedTheme = document.getElementById("inTemplate").value;
 
-        // Command dasar mesin ESC/POS
+        // Command dasar ESC/POS
         const init = [0x1B, 0x40]; 
         const alignCenter = [0x1B, 0x61, 0x01]; 
         const alignLeft = [0x1B, 0x61, 0x00]; 
@@ -479,105 +480,177 @@
         const lf = [0x0A]; 
         const cutPaper = [0x1D, 0x56, 0x41, 0x00];
         
-        // VARIABEL DINAMIS BERDASARKAN TEMPLATE
-        let charDivider = "-";
-        let headerStyleCmd = [0x1B, 0x21, 0x10]; // Standar: Double Height
+        // VARIABEL DESAIN (Mengikuti Pilihan Template)
+        let charDivider = "-"; // Default: Thermal 1 (Dashed)
+        let headerStyleCmd = [0x1B, 0x21, 0x10]; // Default Header: Double Height
         let isBoldModern = false;
 
-        // Logika penyesuaian ESC/POS
         if (selectedTheme.includes("theme-thermal-2")) {
-            // Thermal 2: Minimalis -> Garis titik, header font biasa (tidak terlalu besar)
             charDivider = ".";
             headerStyleCmd = textNormal; 
         } else if (selectedTheme.includes("theme-thermal-3")) {
-            // Thermal 3: Modern Bold -> Garis solid/sama dengan, header font besar tebal, total tebal
             charDivider = "=";
-            headerStyleCmd = [0x1B, 0x21, 0x30]; // Double Height + Double Width
+            headerStyleCmd = [0x1B, 0x21, 0x20]; // Double Width
             isBoldModern = true;
         }
 
-        // Format 42 Karakter untuk ukuran kertas 80mm
+        // Ukuran lebar kertas kasir 80mm = 42 Karakter (Standar ESC/POS)
         const maxChar = 42; 
-        function padRight(str, len) { return (str + " ".repeat(len)).substring(0, len); }
-        function padLeft(str, len) { return (" ".repeat(len) + str).slice(-len); }
+        
+        // Helper Perataan Teks (Mencegah potong kata jika tidak perlu)
+        function padRight(str, len) { 
+            str = str.toString();
+            return str.length >= len ? str.substring(0, len) : str + " ".repeat(len - str.length); 
+        }
+        function padLeft(str, len) { 
+            str = str.toString();
+            return str.length >= len ? str.substring(str.length - len) : " ".repeat(len - str.length) + str; 
+        }
 
         const divider = charDivider.repeat(maxChar) + "\n";
 
-        // --- MERAKIT STRUK CETAKAN ---
+        // MULAI MERAKIT BYTE =======================
         addCmd(init);
         
-        // 1. HEADER (Menggunakan variabel dinamis headerStyleCmd)
+        // 1. HEADER (Rata Tengah)
         addCmd(alignCenter);
-        addCmd(boldOn);
+        if(isBoldModern) addCmd(boldOn);
         addCmd(headerStyleCmd);
         addTxt(document.getElementById("viewBengkelNama").innerText + "\n");
         addCmd(textNormal);
         addCmd(boldOff);
+        addTxt(document.getElementById("viewBengkelTagline").innerText + "\n");
         addTxt(document.getElementById("viewBengkelAlamat").innerText + "\n");
+        addTxt(document.getElementById("viewBengkelKontak").innerText + "\n");
         addTxt(divider);
 
-        // 2. INFORMASI PELANGGAN & MEKANIK 
+        // 2. JUDUL INVOICE & INFO DASAR (Rata Tengah -> Rata Kiri)
+        addCmd(alignCenter);
+        addCmd(boldOn);
+        if(isBoldModern) addCmd([0x1B, 0x21, 0x10]);
+        addTxt("INVOICE\n");
+        if(isBoldModern) addCmd(textNormal);
+        addCmd(boldOff);
+        addTxt("No: " + document.getElementById("viewNo").innerText + "\n");
+        addTxt("Tanggal: " + document.getElementById("viewTanggal").innerText + "\n");
+        addTxt(divider);
+
+        // 3. DATA PELANGGAN
         addCmd(alignLeft);
-        addTxt("No Inv : " + document.getElementById("inNo").value + "\n");
-        addTxt("Tanggal: " + document.getElementById("inTanggal").value + "\n");
-        addTxt("Mekanik: " + document.getElementById("inMekanik").value + "\n");
-        addTxt("Cust   : " + document.getElementById("inNama").value + "\n");
-        addTxt("Mobil  : " + document.getElementById("inMobil").value + "\n");
-        addTxt("Plat No: " + document.getElementById("inPlat").value + "\n");
+        addCmd(boldOn);
+        addTxt("DATA PELANGGAN\n");
+        addCmd(boldOff);
+        addTxt(padRight("Nama", 12) + ": " + document.getElementById("viewNama").innerText + "\n");
+        addTxt(padRight("Alamat", 12) + ": " + document.getElementById("viewAlamat").innerText + "\n");
+        addTxt(padRight("No. Telepon", 12) + ": " + document.getElementById("viewTelp").innerText + "\n");
+        addTxt("\n");
+
+        // 4. DATA KENDARAAN
+        addCmd(boldOn);
+        addTxt("DATA KENDARAAN\n");
+        addCmd(boldOff);
+        addTxt(padRight("Merek/Tipe", 12) + ": " + document.getElementById("viewMobil").innerText + "\n");
+        addTxt(padRight("No. Polisi", 12) + ": " + document.getElementById("viewPlat").innerText + "\n");
+        addTxt(padRight("Thn/Warna", 12) + ": " + document.getElementById("viewWarna").innerText + "\n");
+        addTxt(padRight("Kilometer", 12) + ": " + document.getElementById("viewKM").innerText + "\n");
         addTxt(divider);
 
-        // 3. DAFTAR BARANG DAN JASA
-        listItemInvoice.forEach(item => {
-            let nmItem = item.nama;
-            if(nmItem.length > maxChar) nmItem = nmItem.substring(0, maxChar);
+        // 5. TABEL BARANG (No [2], Desc [22], Qty [4], Total [11]) -> Total 42 Char
+        addCmd(boldOn);
+        addTxt(padRight("No", 3) + padRight("Deskripsi", 23) + padLeft("Qty", 3) + padLeft("Total", 13) + "\n");
+        addCmd(boldOff);
+        addTxt(divider);
+
+        listItemInvoice.forEach((item, index) => {
+            let numStr = (index + 1).toString();
+            let desc = item.nama;
+            let qtyStr = item.qty.toString();
+            let totalStr = (item.harga * item.qty).toLocaleString('id-ID');
             
-            // Jika Thermal 3 (Modern Bold) nama barang di-bold
+            // Memecah deskripsi panjang jadi beberapa baris (Max 22 char per baris)
+            let descLines = [];
+            for (let i = 0; i < desc.length; i += 22) {
+                descLines.push(desc.substring(i, i + 22));
+            }
+            
             if(isBoldModern) addCmd(boldOn);
-            addTxt(nmItem + "\n");
+            
+            // Baris pertama item (No + Baris 1 Desc + Qty + Total)
+            let line1 = padRight(numStr, 3) + padRight(descLines[0], 23) + padLeft(qtyStr, 3) + padLeft(totalStr, 13);
+            addTxt(line1 + "\n");
+            
+            // Sisa baris deskripsi (jika panjang) diletakkan tepat di bawah kolom deskripsi
+            for (let i = 1; i < descLines.length; i++) {
+                addTxt("   " + descLines[i] + "\n");
+            }
+            
             if(isBoldModern) addCmd(boldOff);
-            
-            const total = (item.harga * item.qty).toLocaleString('id-ID');
-            const qtyHrg = `  ${item.qty} x ${item.harga.toLocaleString('id-ID')}`;
-            
-            const sLen = maxChar - qtyHrg.length - total.length;
-            const spaces = sLen > 0 ? " ".repeat(sLen) : " ";
-            addTxt(qtyHrg + spaces + total + "\n");
         });
         addTxt(divider);
 
-        // 4. SUMMARY
-        let subtotal = document.getElementById("viewSubtotal").innerText;
-        let ppn = document.getElementById("viewTotalPPN").innerText;
-        let grand = document.getElementById("viewGrandTotal").innerText;
+        // 6. CATATAN
+        let noteText = document.getElementById("inCatatan").value.split('\n');
+        addCmd(boldOn);
+        addTxt("Catatan:\n");
+        addCmd(boldOff);
+        noteText.forEach(line => {
+            for (let i = 0; i < line.length; i += 42) {
+                addTxt(line.substring(i, i + 42) + "\n");
+            }
+        });
+        addTxt(divider);
 
-        addTxt(padRight("SUBTOTAL", 20) + padLeft(subtotal, maxChar - 20) + "\n");
+        // 7. SUMMARY KEUANGAN
+        let tJasa = document.getElementById("viewTotalJasa").innerText;
+        let tPart = document.getElementById("viewTotalParts").innerText;
+        let subT = document.getElementById("viewSubtotal").innerText;
+        let ppnT = document.getElementById("viewTotalPPN").innerText;
+        let labelPPN = document.getElementById("labelPPN").innerText;
+        let grandT = document.getElementById("viewGrandTotal").innerText;
+
+        addTxt(padRight("Total Jasa Service:", 25) + padLeft(tJasa, 17) + "\n");
+        addTxt(padRight("Total Suku Cadang:", 25) + padLeft(tPart, 17) + "\n");
+        addTxt(padRight("Subtotal:", 25) + padLeft(subT, 17) + "\n");
         if(parseFloat(document.getElementById("inPPN").value) > 0) {
-            addTxt(padRight("PPN", 20) + padLeft(ppn, maxChar - 20) + "\n");
+            addTxt(padRight(labelPPN, 25) + padLeft(ppnT, 17) + "\n");
         }
         
-        // Penebalan Grand Total
+        addTxt(divider);
         addCmd(boldOn);
-        if(isBoldModern) addCmd([0x1B, 0x21, 0x10]); // Jika Theme 3, Total fontnya dibesarkan sedikit
-        addTxt(padRight("GRAND TOTAL", 18) + padLeft(grand, maxChar - 18) + "\n");
+        if(isBoldModern) addCmd([0x1B, 0x21, 0x10]);
+        addTxt(padRight("GRAND TOTAL:", 18) + padLeft(grandT, maxChar - 18) + "\n");
         if(isBoldModern) addCmd(textNormal);
         addCmd(boldOff);
-        
         addTxt(divider);
+
+        // 8. TANDA TANGAN (Kiri Bengkel, Kanan Mekanik, Bawah Pelanggan) -> Identik dengan layar
+        // Kolom 1 (Kiri) = 21 Karakter, Kolom 2 (Kanan) = 21 Karakter
+        addTxt(padRight("Hormat Kami,", 21) + padRight("Mekanik,", 21) + "\n");
+        addTxt("\n\n\n");
         
-        // 5. FOOTER
+        let bklName = document.getElementById("viewBengkelNama").innerText;
+        if(bklName.length > 20) bklName = bklName.substring(0, 20); // Potong jika kepanjangan
+        
+        let mekName = document.getElementById("viewMekanik").innerText;
+        if(mekName.length > 20) mekName = mekName.substring(0, 20);
+
+        addTxt(padRight(bklName, 21) + padRight(mekName, 21) + "\n");
+        addTxt("\n");
+        
+        // Pelanggan di tengah
         addCmd(alignCenter);
-        if(isBoldModern) addCmd(boldOn);
-        addTxt("Terima kasih atas kunjungan Anda.\n");
-        if(isBoldModern) addCmd(boldOff);
-        addTxt("Barang yg sudah dibeli tdk dpt ditukar.\n");
-        addCmd(lf); addCmd(lf); addCmd(lf); addCmd(lf);
+        addTxt("Pelanggan,\n\n\n\n");
+        addTxt("Tanda Tangan\n");
+
+        addCmd(lf); addCmd(lf); addCmd(lf);
         addCmd(cutPaper); 
 
         return printData;
     }
 
-
-    // DATA PROFIL MULTI-BENGKEL
+    // =======================================================
+    // 3. FUNGSI APLIKASI DASAR (DATABASE & UI)
+    // =======================================================
     const dataBengkel = [
         { nama: "BENGKEL MOBIL MANOKWARI", tagline: "Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang", alamat: "Jl. Trikora Wosi, Manokwari, Papua Barat 98312", kontak: "Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com" },
         { nama: "PAPUA BINTANG MOTOR", tagline: "Spesialis Engine, Kaki-Kaki & AC Mobil", alamat: "Jl. Yos Sudarso No. 88, Sanggeng, Manokwari 98312", kontak: "Telp/WA: 0821-9999-8888 | IG: @papuabintangmotor" },
@@ -601,7 +674,7 @@
         area.className = "preview-panel " + selectedTheme;
     }
 
-    // DATABASE 500 ITEM (300 Part + 100 Ban + 100 Jasa)
+    // DATABASE 500 ITEM
     const databaseSukuCadang = {
         "Toyota": [
             { nama: "[Toyota] Oli Mesin TMO 10W-40 Synthetic (Galon 4L)", harga: 480000, tipe: "part" },
@@ -1197,8 +1270,8 @@
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td class="text-center">${index + 1}</td>
-                <td>${item.nama}</td>
-                <td class="text-center">${item.qty}</td>
+                <td class="text-left">${item.nama}</td>
+                <td class="text-right">${item.qty}</td>
                 <td class="text-right">${item.harga.toLocaleString('id-ID')}</td>
                 <td class="text-right">${totalBaris.toLocaleString('id-ID')}</td>
                 <td class="text-center no-print"><button class="btn-del-item" onclick="hapusItemInvoice(${index})">X</button></td>
@@ -1214,7 +1287,11 @@
         document.getElementById("viewTotalJasa").innerText = "Rp " + totalJasa.toLocaleString('id-ID');
         document.getElementById("viewTotalParts").innerText = "Rp " + totalParts.toLocaleString('id-ID');
         document.getElementById("viewSubtotal").innerText = "Rp " + subtotal.toLocaleString('id-ID');
-        document.getElementById("viewPersenPPN").innerText = persenPPN;
+        
+        const elPersen = document.getElementById("viewPersenPPN");
+        if(elPersen) elPersen.innerText = persenPPN;
+        document.getElementById("labelPPN").innerText = `PPN (${persenPPN}%):`;
+        
         document.getElementById("viewTotalPPN").innerText = "Rp " + nominalPPN.toLocaleString('id-ID');
         document.getElementById("viewGrandTotal").innerText = "Rp " + grandTotal.toLocaleString('id-ID');
     }
@@ -1222,7 +1299,7 @@
     function hitungUlangTotal() { tampilkanTabelInvoice(); }
 
     // Init Call (Start System)
-    inisialisasiDataAcak(); // Panggil fungsi acak saat start up
+    inisialisasiDataAcak();
     ubahBengkel();
     tampilkanTabelInvoice();
 </script>
