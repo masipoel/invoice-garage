@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - Thermal & Bluetooth</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Thermal & Bluetooth Aktif</title>
     <style>
         /* ========================================================
            GLOBAL STYLES & INPUT PANEL
@@ -103,7 +103,6 @@
         .thermal .items-table { font-size: 10px; margin-bottom: 10px; }
         .thermal .items-table th { background: none; color: #000; border: none; border-bottom: 1px dashed #000; padding: 4px 2px; }
         .thermal .items-table td { border: none; padding: 4px 2px; color: #000; }
-        /* Sembunyikan kolom harga satuan di thermal agar tidak terlalu sesak */
         .thermal .items-table th:nth-child(4), .thermal .items-table td:nth-child(4) { display: none; }
         .thermal .summary-container { display: block; }
         .thermal .notes-view { width: 100%; font-size: 9px; margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 5px; }
@@ -115,10 +114,10 @@
         .thermal .sig-line { margin-top: 25px; border-top: 1px dashed #000; width: 60%; margin-left: auto; margin-right: auto; }
 
         /* THERMAL THEME VARIANTS */
-        .theme-thermal-1 { /* Standard Thermal */ }
-        .theme-thermal-2 { /* Minimalist Thermal */ border-style: dotted !important; }
+        .theme-thermal-1 { }
+        .theme-thermal-2 { border-style: dotted !important; }
         .theme-thermal-2 .invoice-header, .theme-thermal-2 .info-box h3, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view, .theme-thermal-2 .grand-total-row, .theme-thermal-2 .sig-line { border-bottom-style: dotted; border-top-style: dotted; }
-        .theme-thermal-3 { /* Bold Header Thermal */ font-family: Arial, sans-serif !important; }
+        .theme-thermal-3 { font-family: Arial, sans-serif !important; }
         .theme-thermal-3 .comp-info h1 { font-weight: 900; }
         .theme-thermal-3 .grand-total-row { border-top: 2px solid #000; border-bottom: 2px solid #000; font-weight: bold; }
 
@@ -149,7 +148,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Pilih Template Invoice:</label>
+            <label>Pilih Template Invoice Layar/A4:</label>
             <select id="inTemplate" onchange="ubahTemplate()">
                 <optgroup label="Kertas A4 (Standar)">
                     <option value="theme-1">A4 - Template 1 (Original Resmi)</option>
@@ -235,8 +234,8 @@
 3. Periksa barang bawaan anda.</textarea>
         </div>
 
-        <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF (Sistem OS)</button>
-        <button class="btn-bt" onclick="pindaiBluetooth()">📡 Pindai & Cetak ke Printer Bluetooth</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF (Kertas A4)</button>
+        <button class="btn-bt" onclick="pindaiBluetooth()">📡 Pindai & Cetak ke Printer Bluetooth Thermal</button>
     </div>
 
     <div class="preview-panel theme-1" id="areaCetak">
@@ -315,8 +314,7 @@
     // 1. FITUR RANDOMIZER TANGGAL, INVOICE & MEKANIK
     // =======================================================
     function inisialisasiDataAcak() {
-        // TANGGAL ACAK (1 Jan 2026 - 31 Mei 2026)
-        const start = new Date(2026, 0, 1).getTime(); // 1 Januari 2026
+        const start = new Date(2026, 0, 1).getTime(); // 1 Jan 2026
         const end = new Date(2026, 4, 31).getTime();  // 31 Mei 2026
         const randomTime = new Date(start + Math.random() * (end - start));
         
@@ -325,54 +323,174 @@
         const tgl = String(randomTime.getDate()).padStart(2, '0');
         document.getElementById("inTanggal").value = `${thn}-${bln}-${tgl}`;
 
-        // NOMOR INVOICE ACAK menyesuaikan Tahun dan Bulan
-        const acak4Angka = Math.floor(1000 + Math.random() * 9000); // 1000 - 9999
+        const acak4Angka = Math.floor(1000 + Math.random() * 9000);
         document.getElementById("inNo").value = `INV-${thn}/${bln}/${acak4Angka}`;
 
-        // NAMA MEKANIK ACAK
         const listMekanik = ["Andi Saputra", "Joko Riyanto", "Budi Santoso", "Hasanudin", "Riko Pratama", "Dani Setiawan", "Eko Wahyudi", "Iwan", "Yusuf", "Markus"];
-        const mekanikTerpilih = listMekanik[Math.floor(Math.random() * listMekanik.length)];
-        document.getElementById("inMekanik").value = mekanikTerpilih;
+        document.getElementById("inMekanik").value = listMekanik[Math.floor(Math.random() * listMekanik.length)];
 
         sinkronisasiData();
     }
 
 
     // =======================================================
-    // 2. FITUR WEB BLUETOOTH PRINTER THERMAL
+    // 2. SISTEM CETAK ESC/POS UNTUK PRINTER BLUETOOTH THERMAL
     // =======================================================
     async function pindaiBluetooth() {
         if (!navigator.bluetooth) {
-            alert("Maaf, Browser Anda belum mendukung Web Bluetooth API.\nHarap gunakan Google Chrome di PC atau Android, dan pastikan Anda menggunakan HTTPS atau Localhost.");
+            alert("Perhatian: Browser Anda tidak mendukung API Bluetooth Web.\n\nSyarat penggunaan fitur ini:\n1. Gunakan Google Chrome (PC/Mac/Android).\n2. Harus diakses menggunakan HTTPS atau Localhost (bukan file:///).\n3. Bluetooth pada perangkat Anda telah menyala.");
             return;
         }
 
         try {
-            // Mencari perangkat Bluetooth (Printer Thermal generik)
+            // Meminta koneksi Bluetooth dari User (Browser memunculkan Popup)
             const device = await navigator.bluetooth.requestDevice({
                 acceptAllDevices: true,
-                optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', 'e7810a71-73ae-499d-8c15-faa9aef0c3f2'] 
-                // UUIDs di atas adalah UUID umum untuk printer thermal kasir bluetooth
+                optionalServices: [
+                    '000018f0-0000-1000-8000-00805f9b34fb', // Universal ESC/POS Service
+                    'e7810a71-73ae-499d-8c15-faa9aef0c3f2', // Alternatif Generic Service
+                    '0000fee7-0000-1000-8000-00805f9b34fb'  // Miji / Inner Printer
+                ]
             });
 
-            alert(`Sukses Menemukan: ${device.name}\n\n[SIMULASI]\nMenghubungkan ke GATT Server & mengirim byte struk ESC/POS...`);
+            const server = await device.gatt.connect();
             
-            // Note: Untuk mencetak teks beneran melalui Javascript ke Thermal murni (tanpa app ketiga), 
-            // kita harus meng-encode teks menjadi Uint8Array berisi command ESC/POS, lalu mengirimnya via GATT characteristic.
-            // Baris di bawah adalah simulasi koneksi agar tidak error jika UUID tidak cocok persis.
-            console.log("Device selected:", device.name);
-            
-            // Contoh alur koneksi (dikomen agar tidak error jika printer bukan thermal sungguhan):
-            // const server = await device.gatt.connect();
-            // const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
-            // const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
-            // let encoder = new TextEncoder('utf-8');
-            // await characteristic.writeValue(encoder.encode("Tes Print\n\n"));
-            
+            // Mencari Characteristic (saluran) yang dapat menerima input data (Write)
+            let printCharacteristic = null;
+            const services = await server.getPrimaryServices();
+            for (const service of services) {
+                const characteristics = await service.getCharacteristics();
+                for (const characteristic of characteristics) {
+                    if (characteristic.properties.write || characteristic.properties.writeWithoutResponse) {
+                        printCharacteristic = characteristic;
+                        break;
+                    }
+                }
+                if (printCharacteristic) break;
+            }
+
+            if (!printCharacteristic) {
+                throw new Error("Layanan 'Write' tidak ditemukan pada printer ini.");
+            }
+
+            // Membangun paket byte ESC/POS
+            const escposData = buildESCPOSTemplate();
+
+            // Mengirim data menggunakan sistem Chunk (100 byte per potongan)
+            // Protokol Bluetooth (BLE MTU) tidak bisa mengirim file terlalu besar sekaligus.
+            const chunkSize = 100;
+            for (let i = 0; i < escposData.length; i += chunkSize) {
+                const chunk = escposData.slice(i, i + chunkSize);
+                if (printCharacteristic.properties.write) {
+                    await printCharacteristic.writeValue(chunk);
+                } else {
+                    await printCharacteristic.writeValueWithoutResponse(chunk);
+                }
+            }
+
+            alert("Struk berhasil dikirim dan dicetak pada: " + device.name);
+            device.gatt.disconnect();
+
         } catch (error) {
-            console.error("Bluetooth Error:", error);
-            alert("Gagal memindai atau menghubungkan ke printer Bluetooth.\n" + error);
+            console.error("Kesalahan Bluetooth:", error);
+            alert("Gagal memindai atau mencetak.\n\nPesan Error: " + error.message);
         }
+    }
+
+    // Fungsi konversi HTML menjadi barisan kode heksadesimal mesin thermal
+    function buildESCPOSTemplate() {
+        let printData = new Uint8Array();
+        const encoder = new TextEncoder();
+
+        function addCmd(cmdArray) {
+            let temp = new Uint8Array(printData.length + cmdArray.length);
+            temp.set(printData);
+            temp.set(cmdArray, printData.length);
+            printData = temp;
+        }
+
+        function addTxt(text) { addCmd(encoder.encode(text)); }
+
+        // --- DAFTAR COMMAND MESIN ESC/POS ---
+        const init = [0x1B, 0x40]; 
+        const alignCenter = [0x1B, 0x61, 0x01]; 
+        const alignLeft = [0x1B, 0x61, 0x00]; 
+        const boldOn = [0x1B, 0x45, 0x01]; 
+        const boldOff = [0x1B, 0x45, 0x00]; 
+        const textDoubleH = [0x1B, 0x21, 0x10]; 
+        const textNormal = [0x1B, 0x21, 0x00]; 
+        const lf = [0x0A]; 
+        const cutPaper = [0x1D, 0x56, 0x41, 0x00];
+
+        // Format 42 Karakter untuk ukuran kertas 80mm agar muat dengan rapi.
+        const maxChar = 42; 
+        function padRight(str, len) { return (str + " ".repeat(len)).substring(0, len); }
+        function padLeft(str, len) { return (" ".repeat(len) + str).slice(-len); }
+
+        const divider = "-".repeat(maxChar) + "\n";
+
+        // --- MERAKIT STRUK CETAKAN ---
+        addCmd(init);
+        
+        // 1. HEADER (Tengah, Tebal, Besar)
+        addCmd(alignCenter);
+        addCmd(boldOn);
+        addCmd(textDoubleH);
+        addTxt(document.getElementById("viewBengkelNama").innerText + "\n");
+        addCmd(textNormal);
+        addCmd(boldOff);
+        addTxt(document.getElementById("viewBengkelAlamat").innerText + "\n");
+        addTxt(divider);
+
+        // 2. INFORMASI PELANGGAN & MEKANIK (Kiri)
+        addCmd(alignLeft);
+        addTxt("No Inv : " + document.getElementById("inNo").value + "\n");
+        addTxt("Tanggal: " + document.getElementById("inTanggal").value + "\n");
+        addTxt("Mekanik: " + document.getElementById("inMekanik").value + "\n");
+        addTxt("Cust   : " + document.getElementById("inNama").value + "\n");
+        addTxt("Mobil  : " + document.getElementById("inMobil").value + "\n");
+        addTxt("Plat No: " + document.getElementById("inPlat").value + "\n");
+        addTxt(divider);
+
+        // 3. DAFTAR BARANG DAN JASA
+        listItemInvoice.forEach(item => {
+            // Nama barang otomatis dipotong kalau kepanjangan
+            let nmItem = item.nama;
+            if(nmItem.length > maxChar) nmItem = nmItem.substring(0, maxChar);
+            addTxt(nmItem + "\n");
+            
+            const total = (item.harga * item.qty).toLocaleString('id-ID');
+            const qtyHrg = `  ${item.qty} x ${item.harga.toLocaleString('id-ID')}`;
+            
+            // Kalkulasi jarak spasi agar harga sejajar rata kanan
+            const sLen = maxChar - qtyHrg.length - total.length;
+            const spaces = sLen > 0 ? " ".repeat(sLen) : " ";
+            addTxt(qtyHrg + spaces + total + "\n");
+        });
+        addTxt(divider);
+
+        // 4. SUMMARY (Subtotal, PPN, Total Akhir)
+        let subtotal = document.getElementById("viewSubtotal").innerText;
+        let ppn = document.getElementById("viewTotalPPN").innerText;
+        let grand = document.getElementById("viewGrandTotal").innerText;
+
+        addTxt(padRight("SUBTOTAL", 20) + padLeft(subtotal, maxChar - 20) + "\n");
+        if(parseFloat(document.getElementById("inPPN").value) > 0) {
+            addTxt(padRight("PPN", 20) + padLeft(ppn, maxChar - 20) + "\n");
+        }
+        addCmd(boldOn);
+        addTxt(padRight("GRAND TOTAL", 20) + padLeft(grand, maxChar - 20) + "\n");
+        addCmd(boldOff);
+        addTxt(divider);
+        
+        // 5. FOOTER
+        addCmd(alignCenter);
+        addTxt("Terima kasih atas kunjungan Anda.\n");
+        addTxt("Barang yg sudah dibeli tdk dpt ditukar.\n");
+        addCmd(lf); addCmd(lf); addCmd(lf); addCmd(lf);
+        addCmd(cutPaper); // Command pemotong kertas (berlaku untuk printer dengan auto-cutter)
+
+        return printData;
     }
 
 
@@ -400,7 +518,7 @@
         area.className = "preview-panel " + selectedTheme;
     }
 
-    // DATABASE 500 ITEM
+    // DATABASE 500 ITEM (300 Part + 100 Ban + 100 Jasa)
     const databaseSukuCadang = {
         "Toyota": [
             { nama: "[Toyota] Oli Mesin TMO 10W-40 Synthetic (Galon 4L)", harga: 480000, tipe: "part" },
@@ -1021,7 +1139,7 @@
     function hitungUlangTotal() { tampilkanTabelInvoice(); }
 
     // Init Call (Start System)
-    inisialisasiDataAcak(); // Panggil fungsi acak tanggal, mekanik & id invoice saat start
+    inisialisasiDataAcak(); // Panggil fungsi acak saat start up
     ubahBengkel();
     tampilkanTabelInvoice();
 </script>
