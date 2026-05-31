@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Presisi Identik</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Tanpa TTD</title>
     <style>
         /* ========================================================
            GLOBAL STYLES & INPUT PANEL
@@ -93,7 +93,7 @@
         .thermal .inv-title h2 { font-size: 14px; margin: 0; color: #000; }
         .thermal .inv-title p { margin: 0; font-weight: normal; font-size: 10px; }
         
-        /* Ubah layout Pelanggan jadi menumpuk rata kiri */
+        /* Layout Pelanggan menumpuk rata kiri */
         .thermal .info-section { display: block; margin-bottom: 10px; }
         .thermal .info-box { width: 100%; border: none; padding: 0; margin-bottom: 8px; background: none;}
         .thermal .info-box h3 { font-size: 11px; margin: 0; padding-bottom: 2px; color:#000; background: none; border-bottom: none; font-weight: bold;}
@@ -109,34 +109,30 @@
         .thermal .notes-view { width: 100%; font-size: 10px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px dashed #000;}
         .thermal .summary-table { width: 100%; }
         .thermal .summary-table td { font-size: 10px; color:#000; }
-        .thermal .summary-table td:first-child { text-align: left; font-weight: normal;} /* Format Kasir Rata Kiri */
+        .thermal .summary-table td:first-child { text-align: left; font-weight: normal;} 
         .thermal .summary-table td:last-child { text-align: right; }
         .thermal .grand-total-row { background: none; font-size: 12px; border-top: 1px dashed #000; border-bottom: 1px dashed #000;}
         .thermal .grand-total-row td:first-child { font-weight: bold; }
         
-        /* Tanda Tangan: Sejajar kiri Kanan, 1 di Bawah Tengah (Persis Printout ESC/POS) */
-        .thermal .sig-section { display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 10px; }
-        .thermal .sig-box { width: 45%; margin-bottom: 10px; font-size: 10px; text-align: left; }
-        .thermal .sig-box:last-child { width: 100%; text-align: center; margin-top: 10px; }
-        .thermal .sig-line { margin-top: 25px; border-top: 1px dashed #000; width: 90%; margin-left: 0; }
-        .thermal .sig-box:last-child .sig-line { margin-left: auto; margin-right: auto; width: 50%; }
+        /* TANDA TANGAN DIHILANGKAN PADA STRUK THERMAL */
+        .thermal .sig-section { display: none !important; }
 
         /* ========================================================
            KERTAS THERMAL 80mm: VARIASI TEMPLATE
            ======================================================== */
         /* THERMAL 1 (Standar - Garis Putus/Dashed) */
-        .theme-thermal-1 .invoice-header, .theme-thermal-1 .items-table th, .theme-thermal-1 .notes-view, .theme-thermal-1 .sig-line { border-bottom-style: dashed; }
+        .theme-thermal-1 .invoice-header, .theme-thermal-1 .items-table th, .theme-thermal-1 .notes-view { border-bottom-style: dashed; }
         .theme-thermal-1 .grand-total-row { border-top-style: dashed; border-bottom-style: dashed; }
 
         /* THERMAL 2 (Minimalis - Garis Titik/Dotted) */
         .theme-thermal-2 .comp-info h1 { font-size: 14px; font-weight: normal; }
-        .theme-thermal-2 .invoice-header, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view, .theme-thermal-2 .sig-line { border-bottom-style: dotted !important; }
+        .theme-thermal-2 .invoice-header, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view { border-bottom-style: dotted !important; }
         .theme-thermal-2 .grand-total-row { border-top-style: dotted !important; border-bottom-style: dotted !important; }
 
         /* THERMAL 3 (Modern - Garis Ganda/Tebal & Teks Bold) */
         .theme-thermal-3 .comp-info h1 { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
         .theme-thermal-3 .items-table td:nth-child(2) { font-weight: bold; }
-        .theme-thermal-3 .invoice-header, .theme-thermal-3 .items-table th, .theme-thermal-3 .notes-view, .theme-thermal-3 .sig-line { border-bottom: 2px solid #000 !important; }
+        .theme-thermal-3 .invoice-header, .theme-thermal-3 .items-table th, .theme-thermal-3 .notes-view { border-bottom: 2px solid #000 !important; }
         .theme-thermal-3 .grand-total-row { border-top: 2px solid #000 !important; border-bottom: 2px solid #000 !important; font-weight: 900; font-size: 13px;}
 
         /* MEDIA PRINT UNTUK OS / DRIVER PRINTER KABEL */
@@ -175,7 +171,7 @@
                     <option value="theme-3">A4 - Template 3 (Klasik / Dot Matrix)</option>
                     <option value="theme-5">A4 - Template 5 (Minimalis Clean)</option>
                 </optgroup>
-                <optgroup label="Kertas Thermal 80mm (Struk Kasir)">
+                <optgroup label="Kertas Thermal 80mm (Struk Kasir - Tanpa TTD)">
                     <option value="theme-thermal-1 thermal">Thermal 1 - Struk Standar (Garis Dashed)</option>
                     <option value="theme-thermal-2 thermal">Thermal 2 - Struk Minimalis (Garis Dotted)</option>
                     <option value="theme-thermal-3 thermal">Thermal 3 - Struk Modern (Garis Solid & Bold)</option>
@@ -364,7 +360,7 @@
 
 
     // =======================================================
-    // 2. SISTEM PRINTER BLUETOOTH THERMAL (IDENTIK LAYAR)
+    // 2. SISTEM PRINTER BLUETOOTH THERMAL (IDENTIK LAYAR TANPA TTD)
     // =======================================================
     let globalBluetoothDevice = null;
     let globalPrintCharacteristic = null;
@@ -454,7 +450,7 @@
         }
     }
 
-    // FUNGSI KONVERSI ESC/POS YANG IDENTIK 100% DENGAN LAYOUT LAYAR
+    // FUNGSI KONVERSI ESC/POS MENGADAPTASI TEMPLATE (TANPA TTD)
     function buildESCPOSTemplate() {
         let printData = new Uint8Array();
         const encoder = new TextEncoder();
@@ -497,7 +493,6 @@
         // Ukuran lebar kertas kasir 80mm = 42 Karakter (Standar ESC/POS)
         const maxChar = 42; 
         
-        // Helper Perataan Teks (Mencegah potong kata jika tidak perlu)
         function padRight(str, len) { 
             str = str.toString();
             return str.length >= len ? str.substring(0, len) : str + " ".repeat(len - str.length); 
@@ -524,7 +519,7 @@
         addTxt(document.getElementById("viewBengkelKontak").innerText + "\n");
         addTxt(divider);
 
-        // 2. JUDUL INVOICE & INFO DASAR (Rata Tengah -> Rata Kiri)
+        // 2. JUDUL INVOICE & INFO DASAR
         addCmd(alignCenter);
         addCmd(boldOn);
         if(isBoldModern) addCmd([0x1B, 0x21, 0x10]);
@@ -555,7 +550,7 @@
         addTxt(padRight("Kilometer", 12) + ": " + document.getElementById("viewKM").innerText + "\n");
         addTxt(divider);
 
-        // 5. TABEL BARANG (No [2], Desc [22], Qty [4], Total [11]) -> Total 42 Char
+        // 5. TABEL BARANG
         addCmd(boldOn);
         addTxt(padRight("No", 3) + padRight("Deskripsi", 23) + padLeft("Qty", 3) + padLeft("Total", 13) + "\n");
         addCmd(boldOff);
@@ -567,7 +562,6 @@
             let qtyStr = item.qty.toString();
             let totalStr = (item.harga * item.qty).toLocaleString('id-ID');
             
-            // Memecah deskripsi panjang jadi beberapa baris (Max 22 char per baris)
             let descLines = [];
             for (let i = 0; i < desc.length; i += 22) {
                 descLines.push(desc.substring(i, i + 22));
@@ -575,11 +569,9 @@
             
             if(isBoldModern) addCmd(boldOn);
             
-            // Baris pertama item (No + Baris 1 Desc + Qty + Total)
             let line1 = padRight(numStr, 3) + padRight(descLines[0], 23) + padLeft(qtyStr, 3) + padLeft(totalStr, 13);
             addTxt(line1 + "\n");
             
-            // Sisa baris deskripsi (jika panjang) diletakkan tepat di bawah kolom deskripsi
             for (let i = 1; i < descLines.length; i++) {
                 addTxt("   " + descLines[i] + "\n");
             }
@@ -623,25 +615,12 @@
         addCmd(boldOff);
         addTxt(divider);
 
-        // 8. TANDA TANGAN (Kiri Bengkel, Kanan Mekanik, Bawah Pelanggan) -> Identik dengan layar
-        // Kolom 1 (Kiri) = 21 Karakter, Kolom 2 (Kanan) = 21 Karakter
-        addTxt(padRight("Hormat Kami,", 21) + padRight("Mekanik,", 21) + "\n");
-        addTxt("\n\n\n");
-        
-        let bklName = document.getElementById("viewBengkelNama").innerText;
-        if(bklName.length > 20) bklName = bklName.substring(0, 20); // Potong jika kepanjangan
-        
-        let mekName = document.getElementById("viewMekanik").innerText;
-        if(mekName.length > 20) mekName = mekName.substring(0, 20);
-
-        addTxt(padRight(bklName, 21) + padRight(mekName, 21) + "\n");
-        addTxt("\n");
-        
-        // Pelanggan di tengah
+        // 8. FOOTER (Tanda Tangan Telah Dihapus Sesuai Permintaan)
         addCmd(alignCenter);
-        addTxt("Pelanggan,\n\n\n\n");
-        addTxt("Tanda Tangan\n");
-
+        if(isBoldModern) addCmd(boldOn);
+        addTxt("Terima kasih atas kunjungan Anda.\n");
+        if(isBoldModern) addCmd(boldOff);
+        addTxt("Barang yg sudah dibeli tdk dpt ditukar.\n");
         addCmd(lf); addCmd(lf); addCmd(lf);
         addCmd(cutPaper); 
 
