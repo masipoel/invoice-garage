@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Bluetooth (Pisah Tombol)</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Dinamis & Bluetooth</title>
     <style>
         /* ========================================================
            GLOBAL STYLES & INPUT PANEL
@@ -240,17 +240,21 @@
 
         <hr style="border: 1px solid #eee; margin: 20px 0;">
         
+        <!-- BLOK PRINTER BLUETOOTH THERMAL -->
         <div style="background: #fbfbfb; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
             <h3 style="margin-top: 0; font-size: 14px; color: #8e44ad;">Mode Printer Kasir (Bluetooth)</h3>
             <p id="statusPrinter" style="font-size: 12px; color: #e74c3c; margin: 0 0 10px 0; font-weight: bold;">Status: Belum Terhubung</p>
             
+            <!-- Tombol 1: Hubungkan -->
             <button class="btn-bt-connect" id="btnConnect" onclick="hubungkanPrinter()">📡 Pindai & Hubungkan Printer</button>
             
+            <!-- Tombol 2: Cetak (Akan muncul jika sudah terhubung) -->
             <button class="btn-bt-print" id="btnPrintThermal" onclick="cetakStrukThermal()">🖨️ Cetak Struk Thermal</button>
         </div>
 
     </div>
 
+    <!-- AREA PREVIEW / CETAK -->
     <div class="preview-panel theme-1" id="areaCetak">
         <div class="invoice-header">
             <div class="comp-info">
@@ -347,7 +351,7 @@
 
 
     // =======================================================
-    // 2. SISTEM PRINTER BLUETOOTH THERMAL (PISAH TOMBOL)
+    // 2. SISTEM PRINTER BLUETOOTH THERMAL (PISAH TOMBOL & DINAMIS TEMPLATE)
     // =======================================================
     let globalBluetoothDevice = null;
     let globalPrintCharacteristic = null;
@@ -392,18 +396,14 @@
                 throw new Error("Layanan 'Write' tidak ditemukan pada perangkat ini.");
             }
 
-            // Simpan ke memori global
             globalBluetoothDevice = device;
             globalPrintCharacteristic = foundCharacteristic;
-
-            // Menangani jika printer mati/terputus tiba-tiba
             device.addEventListener('gattserverdisconnected', onPrinterTerputus);
 
-            // Update UI
             document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #27ae60;'>Terhubung (" + device.name + ")</span>";
             document.getElementById('btnConnect').innerText = "🔄 Ganti Printer";
             document.getElementById('btnConnect').style.backgroundColor = "#95a5a6";
-            document.getElementById('btnPrintThermal').style.display = "block"; // Munculkan tombol cetak
+            document.getElementById('btnPrintThermal').style.display = "block"; 
 
             alert("Printer berhasil terhubung! Anda sekarang bisa mencetak struk.");
 
@@ -422,7 +422,7 @@
         document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #e74c3c; font-weight: bold;'>Belum Terhubung / Terputus</span>";
         document.getElementById('btnConnect').innerText = "📡 Pindai & Hubungkan Printer";
         document.getElementById('btnConnect').style.backgroundColor = "#8e44ad";
-        document.getElementById('btnPrintThermal').style.display = "none"; // Sembunyikan tombol cetak
+        document.getElementById('btnPrintThermal').style.display = "none";
     }
 
     // B. Fungsi Cetak Struk
@@ -434,7 +434,7 @@
 
         try {
             const escposData = buildESCPOSTemplate();
-            const chunkSize = 100; // Kirim data per 100 bytes (batas BLE MTU)
+            const chunkSize = 100; // Kirim data per 100 bytes
             
             for (let i = 0; i < escposData.length; i += chunkSize) {
                 const chunk = escposData.slice(i, i + chunkSize);
@@ -445,7 +445,7 @@
                 }
             }
 
-            alert("Struk berhasil dikirim ke printer!");
+            alert("Struk berhasil dikirim ke printer sesuai template yang dipilih!");
         } catch (error) {
             console.error(error);
             alert("Gagal mencetak struk.\nKoneksi mungkin terputus. Silakan hubungkan ulang.\n\nError: " + error.message);
@@ -453,7 +453,7 @@
         }
     }
 
-    // Fungsi konversi form menjadi bahasa mesin ESC/POS
+    // Fungsi konversi bahasa mesin ESC/POS YANG MENYESUAIKAN TEMPLATE PILIHAN
     function buildESCPOSTemplate() {
         let printData = new Uint8Array();
         const encoder = new TextEncoder();
@@ -464,34 +464,52 @@
             temp.set(cmdArray, printData.length);
             printData = temp;
         }
-
         function addTxt(text) { addCmd(encoder.encode(text)); }
 
-        // --- DAFTAR COMMAND MESIN ESC/POS ---
+        // Menganalisa Template Apa Yang Sedang Dipilih Oleh Pengguna
+        const selectedTheme = document.getElementById("inTemplate").value;
+
+        // Command dasar mesin ESC/POS
         const init = [0x1B, 0x40]; 
         const alignCenter = [0x1B, 0x61, 0x01]; 
         const alignLeft = [0x1B, 0x61, 0x00]; 
         const boldOn = [0x1B, 0x45, 0x01]; 
         const boldOff = [0x1B, 0x45, 0x00]; 
-        const textDoubleH = [0x1B, 0x21, 0x10]; 
         const textNormal = [0x1B, 0x21, 0x00]; 
         const lf = [0x0A]; 
         const cutPaper = [0x1D, 0x56, 0x41, 0x00];
+        
+        // VARIABEL DINAMIS BERDASARKAN TEMPLATE
+        let charDivider = "-";
+        let headerStyleCmd = [0x1B, 0x21, 0x10]; // Standar: Double Height
+        let isBoldModern = false;
+
+        // Logika penyesuaian ESC/POS
+        if (selectedTheme.includes("theme-thermal-2")) {
+            // Thermal 2: Minimalis -> Garis titik, header font biasa (tidak terlalu besar)
+            charDivider = ".";
+            headerStyleCmd = textNormal; 
+        } else if (selectedTheme.includes("theme-thermal-3")) {
+            // Thermal 3: Modern Bold -> Garis solid/sama dengan, header font besar tebal, total tebal
+            charDivider = "=";
+            headerStyleCmd = [0x1B, 0x21, 0x30]; // Double Height + Double Width
+            isBoldModern = true;
+        }
 
         // Format 42 Karakter untuk ukuran kertas 80mm
         const maxChar = 42; 
         function padRight(str, len) { return (str + " ".repeat(len)).substring(0, len); }
         function padLeft(str, len) { return (" ".repeat(len) + str).slice(-len); }
 
-        const divider = "-".repeat(maxChar) + "\n";
+        const divider = charDivider.repeat(maxChar) + "\n";
 
         // --- MERAKIT STRUK CETAKAN ---
         addCmd(init);
         
-        // 1. HEADER 
+        // 1. HEADER (Menggunakan variabel dinamis headerStyleCmd)
         addCmd(alignCenter);
         addCmd(boldOn);
-        addCmd(textDoubleH);
+        addCmd(headerStyleCmd);
         addTxt(document.getElementById("viewBengkelNama").innerText + "\n");
         addCmd(textNormal);
         addCmd(boldOff);
@@ -512,7 +530,11 @@
         listItemInvoice.forEach(item => {
             let nmItem = item.nama;
             if(nmItem.length > maxChar) nmItem = nmItem.substring(0, maxChar);
+            
+            // Jika Thermal 3 (Modern Bold) nama barang di-bold
+            if(isBoldModern) addCmd(boldOn);
             addTxt(nmItem + "\n");
+            if(isBoldModern) addCmd(boldOff);
             
             const total = (item.harga * item.qty).toLocaleString('id-ID');
             const qtyHrg = `  ${item.qty} x ${item.harga.toLocaleString('id-ID')}`;
@@ -532,14 +554,21 @@
         if(parseFloat(document.getElementById("inPPN").value) > 0) {
             addTxt(padRight("PPN", 20) + padLeft(ppn, maxChar - 20) + "\n");
         }
+        
+        // Penebalan Grand Total
         addCmd(boldOn);
-        addTxt(padRight("GRAND TOTAL", 20) + padLeft(grand, maxChar - 20) + "\n");
+        if(isBoldModern) addCmd([0x1B, 0x21, 0x10]); // Jika Theme 3, Total fontnya dibesarkan sedikit
+        addTxt(padRight("GRAND TOTAL", 18) + padLeft(grand, maxChar - 18) + "\n");
+        if(isBoldModern) addCmd(textNormal);
         addCmd(boldOff);
+        
         addTxt(divider);
         
         // 5. FOOTER
         addCmd(alignCenter);
+        if(isBoldModern) addCmd(boldOn);
         addTxt("Terima kasih atas kunjungan Anda.\n");
+        if(isBoldModern) addCmd(boldOff);
         addTxt("Barang yg sudah dibeli tdk dpt ditukar.\n");
         addCmd(lf); addCmd(lf); addCmd(lf); addCmd(lf);
         addCmd(cutPaper); 
