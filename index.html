@@ -6,11 +6,45 @@
     <title>Aplikasi Invoice Bengkel Lengkap - Thermal Tanpa TTD</title>
     <style>
         /* ========================================================
-           GLOBAL STYLES & INPUT PANEL
+           GLOBAL STYLES & APP DASHBOARD LAYOUT (1 SCREEN)
            ======================================================== */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .app-container { max-width: 1150px; margin: 0 auto; display: flex; gap: 20px; flex-wrap: wrap; }
-        .input-panel { flex: 1; min-width: 350px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            margin: 0; 
+            padding: 0; 
+            color: #333;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Mencegah scroll pada seluruh halaman */
+        }
+        
+        .app-container { 
+            display: flex; 
+            height: 100vh;
+            width: 100%;
+            flex-direction: row;
+        }
+
+        /* CUSTOM SCROLLBAR UNTUK KESAN APLIKASI PROFESIONAL */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #888; }
+
+        /* ========================================================
+           PANEL INPUT (KIRI)
+           ======================================================== */
+        .input-panel { 
+            flex: 0 0 450px; 
+            height: 100%;
+            overflow-y: auto; /* Scroll independen */
+            background: #fff; 
+            padding: 20px; 
+            box-sizing: border-box;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
+            z-index: 10;
+        }
         .input-panel h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #2cc711; padding-bottom: 8px; font-size: 16px; text-transform: uppercase;}
         .form-group { margin-bottom: 12px; }
         .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
@@ -18,6 +52,7 @@
         label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 12px; color: #555; }
         input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
         button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: background 0.2s; }
+        
         .btn-add { background-color: #27ae60; color: white; width: 100%; }
         .btn-add:hover { background-color: #219653; }
         .btn-print { background-color: #3498db; color: white; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; }
@@ -28,9 +63,35 @@
         .btn-bt-print:hover { background-color: #d35400; }
 
         /* ========================================================
-           KERTAS A4: TEMPLATE 1, 3, 5
+           PANEL PREVIEW KERTAS (KANAN)
            ======================================================== */
-        .preview-panel { width: 21cm; min-height: 29.7cm; background: #fff; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: 0.3s all; }
+        .preview-wrapper {
+            flex: 1;
+            height: 100%;
+            overflow: auto; /* Scroll independen */
+            background: #e2e8f0; /* Warna latar meja/background kertas */
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            box-sizing: border-box;
+        }
+
+        .preview-panel { 
+            width: 21cm; 
+            min-height: 29.7cm; 
+            background: #fff; 
+            padding: 30px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Efek kertas melayang */
+            margin-bottom: 30px;
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            transition: 0.3s all; 
+        }
+
+        /* ========================================================
+           ELEMEN KERTAS A4: TEMPLATE 1, 3, 5
+           ======================================================== */
         .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
         .comp-info h1 { margin: 0; font-size: 20px; color: #e67e22; text-transform: uppercase; }
         .comp-info p { margin: 2px 0; font-size: 11px; color: #555; }
@@ -48,6 +109,7 @@
         .items-table td { padding: 6px 8px; border: 1px solid #eee; font-size: 11px; color: #333;}
         .text-right { text-align: right; }
         .text-center { text-align: center; }
+        .text-left { text-align: left; }
         .btn-del-item { background: #e74c3c; color: white; padding: 2px 6px; font-size: 10px; border-radius: 3px; }
         .btn-del-item:hover { background: #c0392b; }
         .summary-container { display: flex; justify-content: space-between; }
@@ -93,7 +155,6 @@
         .thermal .inv-title h2 { font-size: 14px; margin: 0; color: #000; }
         .thermal .inv-title p { margin: 0; font-weight: normal; font-size: 10px; }
         
-        /* Layout Pelanggan menumpuk rata kiri */
         .thermal .info-section { display: block; margin-bottom: 10px; }
         .thermal .info-box { width: 100%; border: none; padding: 0; margin-bottom: 8px; background: none;}
         .thermal .info-box h3 { font-size: 11px; margin: 0; padding-bottom: 2px; color:#000; background: none; border-bottom: none; font-weight: bold;}
@@ -103,7 +164,7 @@
         .thermal .items-table { font-size: 10px; margin-bottom: 10px; width: 100%; }
         .thermal .items-table th { background: none; color: #000; border: none; padding: 4px 2px; text-align: left; border-bottom: 1px dashed #000;}
         .thermal .items-table td { border: none; padding: 4px 2px; color: #000; }
-        .thermal .items-table th:nth-child(4), .thermal .items-table td:nth-child(4) { display: none; } /* Sembunyikan harga satuan */
+        .thermal .items-table th:nth-child(4), .thermal .items-table td:nth-child(4) { display: none; }
         
         .thermal .summary-container { display: block; }
         .thermal .notes-view { width: 100%; font-size: 10px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px dashed #000;}
@@ -114,32 +175,52 @@
         .thermal .grand-total-row { background: none; font-size: 12px; border-top: 1px dashed #000; border-bottom: 1px dashed #000;}
         .thermal .grand-total-row td:first-child { font-weight: bold; }
         
-        /* TANDA TANGAN DIHILANGKAN PADA STRUK THERMAL */
         .thermal .sig-section { display: none !important; }
 
-        /* ========================================================
-           KERTAS THERMAL 80mm: VARIASI TEMPLATE
-           ======================================================== */
-        /* THERMAL 1 (Standar - Garis Putus/Dashed) */
         .theme-thermal-1 .invoice-header, .theme-thermal-1 .items-table th, .theme-thermal-1 .notes-view { border-bottom-style: dashed; }
         .theme-thermal-1 .grand-total-row { border-top-style: dashed; border-bottom-style: dashed; }
-
-        /* THERMAL 2 (Minimalis - Garis Titik/Dotted) */
         .theme-thermal-2 .comp-info h1 { font-size: 14px; font-weight: normal; }
         .theme-thermal-2 .invoice-header, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view { border-bottom-style: dotted !important; }
         .theme-thermal-2 .grand-total-row { border-top-style: dotted !important; border-bottom-style: dotted !important; }
-
-        /* THERMAL 3 (Modern - Garis Ganda/Tebal & Teks Bold) */
         .theme-thermal-3 .comp-info h1 { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
         .theme-thermal-3 .items-table td:nth-child(2) { font-weight: bold; }
         .theme-thermal-3 .invoice-header, .theme-thermal-3 .items-table th, .theme-thermal-3 .notes-view { border-bottom: 2px solid #000 !important; }
         .theme-thermal-3 .grand-total-row { border-top: 2px solid #000 !important; border-bottom: 2px solid #000 !important; font-weight: 900; font-size: 13px;}
 
-        /* MEDIA PRINT UNTUK OS / DRIVER PRINTER KABEL */
+        /* ========================================================
+           RESPONSIVE MOBILE / TABLET (Tumpuk Vertikal 50:50)
+           ======================================================== */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .input-panel {
+                flex: none;
+                width: 100%;
+                height: 55vh; /* Ambil 55% area layar atas */
+                border-right: none;
+                border-bottom: 2px solid #ccc;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+            .preview-wrapper {
+                flex: none;
+                width: 100%;
+                height: 45vh; /* Ambil 45% area layar bawah */
+                padding: 15px;
+                justify-content: flex-start; /* Agar kertas selalu nampak dari ujung atas */
+            }
+            .form-row { flex-direction: column; gap: 0; }
+            .form-row > div { margin-bottom: 12px; }
+        }
+
+        /* ========================================================
+           MEDIA PRINT UNTUK OS / DRIVER PRINTER
+           ======================================================== */
         @media print {
-            body { background-color: #fff; padding: 0; margin: 0; }
+            body { background-color: #fff; padding: 0; margin: 0; height: auto; overflow: visible; }
+            .app-container { display: block; height: auto; width: 100%; }
             .input-panel { display: none; }
-            .app-container { display: block; margin: 0; padding: 0; }
+            .preview-wrapper { padding: 0; background: transparent; display: block; overflow: visible; height: auto; justify-content: unset; align-items: unset;}
             .preview-panel { box-shadow: none; margin: 0; border: none; }
             .preview-panel:not(.thermal) { width: 100%; min-height: auto; padding: 0; }
             .thermal { margin: 0 !important; padding: 0 !important; width: 78mm !important; }
@@ -151,6 +232,7 @@
 <body>
 
 <div class="app-container">
+    
     <div class="input-panel">
         
         <h2>A. Pengaturan Identitas & Template</h2>
@@ -264,75 +346,78 @@
 
     </div>
 
-    <div class="preview-panel theme-1" id="areaCetak">
-        <div class="invoice-header">
-            <div class="comp-info">
-                <h1 id="viewBengkelNama">BENGKEL MOBIL MANOKWARI</h1>
-                <p><strong id="viewBengkelTagline">Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang</strong></p>
-                <p id="viewBengkelAlamat">Jl. Trikora Wosi, Manokwari, Papua Barat 98312</p>
-                <p id="viewBengkelKontak">Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com</p>
+    <div class="preview-wrapper">
+        <div class="preview-panel theme-1" id="areaCetak">
+            <div class="invoice-header">
+                <div class="comp-info">
+                    <h1 id="viewBengkelNama">BENGKEL MOBIL MANOKWARI</h1>
+                    <p><strong id="viewBengkelTagline">Pusat Layanan Servis Kendaraan Roda 4 & Suku Cadang</strong></p>
+                    <p id="viewBengkelAlamat">Jl. Trikora Wosi, Manokwari, Papua Barat 98312</p>
+                    <p id="viewBengkelKontak">Telp: 0812-3456-7890 | Email: info@bengkelmanokwari.com</p>
+                </div>
+                <div class="inv-title">
+                    <h2>INVOICE</h2>
+                    <p>No: <span id="viewNo"></span></p>
+                    <p>Tanggal: <span id="viewTanggal"></span></p>
+                </div>
             </div>
-            <div class="inv-title">
-                <h2>INVOICE</h2>
-                <p>No: <span id="viewNo"></span></p>
-                <p>Tanggal: <span id="viewTanggal"></span></p>
-            </div>
-        </div>
 
-        <div class="info-section">
-            <div class="info-box">
-                <h3>DATA PELANGGAN</h3>
-                <table class="info-table">
-                    <tr><td>Nama</td><td>: <span id="viewNama"></span></td></tr>
-                    <tr><td>Alamat</td><td>: <span id="viewAlamat"></span></td></tr>
-                    <tr><td>No. Telepon</td><td>: <span id="viewTelp"></span></td></tr>
-                </table>
+            <div class="info-section">
+                <div class="info-box">
+                    <h3>DATA PELANGGAN</h3>
+                    <table class="info-table">
+                        <tr><td>Nama</td><td>: <span id="viewNama"></span></td></tr>
+                        <tr><td>Alamat</td><td>: <span id="viewAlamat"></span></td></tr>
+                        <tr><td>No. Telepon</td><td>: <span id="viewTelp"></span></td></tr>
+                    </table>
+                </div>
+                <div class="info-box" style="margin-top: 5px;">
+                    <h3>DATA KENDARAAN</h3>
+                    <table class="info-table">
+                        <tr><td>Merek / Tipe</td><td>: <span id="viewMobil"></span></td></tr>
+                        <tr><td>No. Polisi</td><td>: <span id="viewPlat"></span></td></tr>
+                        <tr><td>Thn / Warna</td><td>: <span id="viewWarna"></span></td></tr>
+                        <tr><td>Kilometer</td><td>: <span id="viewKM"></span></td></tr>
+                    </table>
+                </div>
             </div>
-            <div class="info-box" style="margin-top: 5px;">
-                <h3>DATA KENDARAAN</h3>
-                <table class="info-table">
-                    <tr><td>Merek / Tipe</td><td>: <span id="viewMobil"></span></td></tr>
-                    <tr><td>No. Polisi</td><td>: <span id="viewPlat"></span></td></tr>
-                    <tr><td>Thn / Warna</td><td>: <span id="viewWarna"></span></td></tr>
-                    <tr><td>Kilometer</td><td>: <span id="viewKM"></span></td></tr>
-                </table>
-            </div>
-        </div>
 
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th width="5%" class="text-left">No</th>
-                    <th width="55%" class="text-left">Deskripsi</th>
-                    <th width="8%" class="text-right">Qty</th>
-                    <th width="14%" class="text-right">Hrg Satuan</th>
-                    <th width="14%" class="text-right">Total</th>
-                    <th width="4%" class="text-center no-print">Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="tabelItemInvoice"></tbody>
-        </table>
-
-        <div class="summary-container">
-            <div class="notes-view">
-                <strong>Catatan:</strong><br>
-                <span id="viewCatatan" style="white-space: pre-line;"></span>
-            </div>
-            <table class="summary-table">
-                <tr><td>Total Jasa Service:</td><td id="viewTotalJasa">Rp 0</td></tr>
-                <tr><td>Total Suku Cadang:</td><td id="viewTotalParts">Rp 0</td></tr>
-                <tr><td>Subtotal:</td><td id="viewSubtotal">Rp 0</td></tr>
-                <tr><td id="labelPPN">PPN (11%):</td><td id="viewTotalPPN">Rp 0</td></tr>
-                <tr class="grand-total-row"><td>GRAND TOTAL:</td><td id="viewGrandTotal">Rp 0</td></tr>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th width="5%" class="text-left">No</th>
+                        <th width="55%" class="text-left">Deskripsi</th>
+                        <th width="8%" class="text-right">Qty</th>
+                        <th width="14%" class="text-right">Hrg Satuan</th>
+                        <th width="14%" class="text-right">Total</th>
+                        <th width="4%" class="text-center no-print">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelItemInvoice"></tbody>
             </table>
-        </div>
 
-        <div class="sig-section">
-            <div class="sig-box"><p>Hormat Kami,</p><div class="sig-line" id="ttdBengkel">BENGKEL MOBIL MANOKWARI</div></div>
-            <div class="sig-box"><p>Mekanik,</p><div class="sig-line" id="viewMekanik">Kepala Mekanik</div></div>
-            <div class="sig-box"><p>Pelanggan,</p><div class="sig-line">Tanda Tangan</div></div>
+            <div class="summary-container">
+                <div class="notes-view">
+                    <strong>Catatan:</strong><br>
+                    <span id="viewCatatan" style="white-space: pre-line;"></span>
+                </div>
+                <table class="summary-table">
+                    <tr><td>Total Jasa Service:</td><td id="viewTotalJasa">Rp 0</td></tr>
+                    <tr><td>Total Suku Cadang:</td><td id="viewTotalParts">Rp 0</td></tr>
+                    <tr><td>Subtotal:</td><td id="viewSubtotal">Rp 0</td></tr>
+                    <tr><td id="labelPPN">PPN (11%):</td><td id="viewTotalPPN">Rp 0</td></tr>
+                    <tr class="grand-total-row"><td>GRAND TOTAL:</td><td id="viewGrandTotal">Rp 0</td></tr>
+                </table>
+            </div>
+
+            <div class="sig-section">
+                <div class="sig-box"><p>Hormat Kami,</p><div class="sig-line" id="ttdBengkel">BENGKEL MOBIL MANOKWARI</div></div>
+                <div class="sig-box"><p>Mekanik,</p><div class="sig-line" id="viewMekanik">Kepala Mekanik</div></div>
+                <div class="sig-box"><p>Pelanggan,</p><div class="sig-line">Tanda Tangan</div></div>
+            </div>
         </div>
     </div>
+    
 </div>
 
 <script>
