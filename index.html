@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - Thermal & Bluetooth Aktif</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Bluetooth (Pisah Tombol)</title>
     <style>
         /* ========================================================
            GLOBAL STYLES & INPUT PANEL
@@ -22,8 +22,10 @@
         .btn-add:hover { background-color: #219653; }
         .btn-print { background-color: #3498db; color: white; width: 100%; margin-top: 15px; font-size: 15px; padding: 12px; }
         .btn-print:hover { background-color: #2980b9; }
-        .btn-bt { background-color: #8e44ad; color: white; width: 100%; margin-top: 10px; font-size: 15px; padding: 12px; }
-        .btn-bt:hover { background-color: #732d91; }
+        .btn-bt-connect { background-color: #8e44ad; color: white; width: 100%; margin-top: 10px; font-size: 15px; padding: 12px; }
+        .btn-bt-connect:hover { background-color: #732d91; }
+        .btn-bt-print { background-color: #e67e22; color: white; width: 100%; margin-top: 10px; font-size: 15px; padding: 12px; display: none; }
+        .btn-bt-print:hover { background-color: #d35400; }
 
         /* ========================================================
            TEMPLATE 1: DESAIN ASLI A4 (DEFAULT)
@@ -223,7 +225,7 @@
         </div>
         <button type="button" class="btn-add" onclick="tambahItemKeInvoice()">+ Tambah ke Invoice</button>
 
-        <h2>5. Pengaturan Keuangan</h2>
+        <h2>5. Pengaturan Keuangan & Cetak</h2>
         <div class="form-row">
             <div><label>PPN (%) jika ada:</label><input type="number" id="inPPN" value="11" min="0" oninput="hitungUlangTotal()"></div>
         </div>
@@ -234,8 +236,19 @@
 3. Periksa barang bawaan anda.</textarea>
         </div>
 
-        <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF (Kertas A4)</button>
-        <button class="btn-bt" onclick="pindaiBluetooth()">📡 Pindai & Cetak ke Printer Bluetooth Thermal</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak PDF / Printer A4 Biasa</button>
+
+        <hr style="border: 1px solid #eee; margin: 20px 0;">
+        
+        <div style="background: #fbfbfb; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+            <h3 style="margin-top: 0; font-size: 14px; color: #8e44ad;">Mode Printer Kasir (Bluetooth)</h3>
+            <p id="statusPrinter" style="font-size: 12px; color: #e74c3c; margin: 0 0 10px 0; font-weight: bold;">Status: Belum Terhubung</p>
+            
+            <button class="btn-bt-connect" id="btnConnect" onclick="hubungkanPrinter()">📡 Pindai & Hubungkan Printer</button>
+            
+            <button class="btn-bt-print" id="btnPrintThermal" onclick="cetakStrukThermal()">🖨️ Cetak Struk Thermal</button>
+        </div>
+
     </div>
 
     <div class="preview-panel theme-1" id="areaCetak">
@@ -334,70 +347,113 @@
 
 
     // =======================================================
-    // 2. SISTEM CETAK ESC/POS UNTUK PRINTER BLUETOOTH THERMAL
+    // 2. SISTEM PRINTER BLUETOOTH THERMAL (PISAH TOMBOL)
     // =======================================================
-    async function pindaiBluetooth() {
+    let globalBluetoothDevice = null;
+    let globalPrintCharacteristic = null;
+
+    // A. Fungsi Pindai dan Hubungkan
+    async function hubungkanPrinter() {
         if (!navigator.bluetooth) {
-            alert("Perhatian: Browser Anda tidak mendukung API Bluetooth Web.\n\nSyarat penggunaan fitur ini:\n1. Gunakan Google Chrome (PC/Mac/Android).\n2. Harus diakses menggunakan HTTPS atau Localhost (bukan file:///).\n3. Bluetooth pada perangkat Anda telah menyala.");
+            alert("Browser tidak mendukung API Bluetooth Web.\n\nGunakan Google Chrome (PC/Android) dengan HTTPS.");
             return;
         }
 
         try {
-            // Meminta koneksi Bluetooth dari User (Browser memunculkan Popup)
+            document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #f39c12;'>Memindai perangkat...</span>";
+            
             const device = await navigator.bluetooth.requestDevice({
                 acceptAllDevices: true,
                 optionalServices: [
-                    '000018f0-0000-1000-8000-00805f9b34fb', // Universal ESC/POS Service
-                    'e7810a71-73ae-499d-8c15-faa9aef0c3f2', // Alternatif Generic Service
-                    '0000fee7-0000-1000-8000-00805f9b34fb'  // Miji / Inner Printer
+                    '000018f0-0000-1000-8000-00805f9b34fb', 
+                    'e7810a71-73ae-499d-8c15-faa9aef0c3f2', 
+                    '0000fee7-0000-1000-8000-00805f9b34fb'  
                 ]
             });
 
-            const server = await device.gatt.connect();
+            document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #f39c12;'>Menghubungkan ke " + device.name + "...</span>";
             
-            // Mencari Characteristic (saluran) yang dapat menerima input data (Write)
-            let printCharacteristic = null;
+            const server = await device.gatt.connect();
             const services = await server.getPrimaryServices();
+            let foundCharacteristic = null;
+
             for (const service of services) {
                 const characteristics = await service.getCharacteristics();
                 for (const characteristic of characteristics) {
                     if (characteristic.properties.write || characteristic.properties.writeWithoutResponse) {
-                        printCharacteristic = characteristic;
+                        foundCharacteristic = characteristic;
                         break;
                     }
                 }
-                if (printCharacteristic) break;
+                if (foundCharacteristic) break;
             }
 
-            if (!printCharacteristic) {
-                throw new Error("Layanan 'Write' tidak ditemukan pada printer ini.");
+            if (!foundCharacteristic) {
+                throw new Error("Layanan 'Write' tidak ditemukan pada perangkat ini.");
             }
 
-            // Membangun paket byte ESC/POS
-            const escposData = buildESCPOSTemplate();
+            // Simpan ke memori global
+            globalBluetoothDevice = device;
+            globalPrintCharacteristic = foundCharacteristic;
 
-            // Mengirim data menggunakan sistem Chunk (100 byte per potongan)
-            // Protokol Bluetooth (BLE MTU) tidak bisa mengirim file terlalu besar sekaligus.
-            const chunkSize = 100;
-            for (let i = 0; i < escposData.length; i += chunkSize) {
-                const chunk = escposData.slice(i, i + chunkSize);
-                if (printCharacteristic.properties.write) {
-                    await printCharacteristic.writeValue(chunk);
-                } else {
-                    await printCharacteristic.writeValueWithoutResponse(chunk);
-                }
-            }
+            // Menangani jika printer mati/terputus tiba-tiba
+            device.addEventListener('gattserverdisconnected', onPrinterTerputus);
 
-            alert("Struk berhasil dikirim dan dicetak pada: " + device.name);
-            device.gatt.disconnect();
+            // Update UI
+            document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #27ae60;'>Terhubung (" + device.name + ")</span>";
+            document.getElementById('btnConnect').innerText = "🔄 Ganti Printer";
+            document.getElementById('btnConnect').style.backgroundColor = "#95a5a6";
+            document.getElementById('btnPrintThermal').style.display = "block"; // Munculkan tombol cetak
+
+            alert("Printer berhasil terhubung! Anda sekarang bisa mencetak struk.");
 
         } catch (error) {
-            console.error("Kesalahan Bluetooth:", error);
-            alert("Gagal memindai atau mencetak.\n\nPesan Error: " + error.message);
+            console.error(error);
+            onPrinterTerputus();
+            alert("Gagal menghubungkan printer.\n\nAlasan: " + error.message);
         }
     }
 
-    // Fungsi konversi HTML menjadi barisan kode heksadesimal mesin thermal
+    // Penanganan jika koneksi terputus
+    function onPrinterTerputus() {
+        globalBluetoothDevice = null;
+        globalPrintCharacteristic = null;
+        
+        document.getElementById('statusPrinter').innerHTML = "Status: <span style='color: #e74c3c; font-weight: bold;'>Belum Terhubung / Terputus</span>";
+        document.getElementById('btnConnect').innerText = "📡 Pindai & Hubungkan Printer";
+        document.getElementById('btnConnect').style.backgroundColor = "#8e44ad";
+        document.getElementById('btnPrintThermal').style.display = "none"; // Sembunyikan tombol cetak
+    }
+
+    // B. Fungsi Cetak Struk
+    async function cetakStrukThermal() {
+        if (!globalPrintCharacteristic) {
+            alert("Printer belum terhubung. Silakan klik tombol Pindai & Hubungkan terlebih dahulu.");
+            return;
+        }
+
+        try {
+            const escposData = buildESCPOSTemplate();
+            const chunkSize = 100; // Kirim data per 100 bytes (batas BLE MTU)
+            
+            for (let i = 0; i < escposData.length; i += chunkSize) {
+                const chunk = escposData.slice(i, i + chunkSize);
+                if (globalPrintCharacteristic.properties.write) {
+                    await globalPrintCharacteristic.writeValue(chunk);
+                } else {
+                    await globalPrintCharacteristic.writeValueWithoutResponse(chunk);
+                }
+            }
+
+            alert("Struk berhasil dikirim ke printer!");
+        } catch (error) {
+            console.error(error);
+            alert("Gagal mencetak struk.\nKoneksi mungkin terputus. Silakan hubungkan ulang.\n\nError: " + error.message);
+            onPrinterTerputus();
+        }
+    }
+
+    // Fungsi konversi form menjadi bahasa mesin ESC/POS
     function buildESCPOSTemplate() {
         let printData = new Uint8Array();
         const encoder = new TextEncoder();
@@ -422,7 +478,7 @@
         const lf = [0x0A]; 
         const cutPaper = [0x1D, 0x56, 0x41, 0x00];
 
-        // Format 42 Karakter untuk ukuran kertas 80mm agar muat dengan rapi.
+        // Format 42 Karakter untuk ukuran kertas 80mm
         const maxChar = 42; 
         function padRight(str, len) { return (str + " ".repeat(len)).substring(0, len); }
         function padLeft(str, len) { return (" ".repeat(len) + str).slice(-len); }
@@ -432,7 +488,7 @@
         // --- MERAKIT STRUK CETAKAN ---
         addCmd(init);
         
-        // 1. HEADER (Tengah, Tebal, Besar)
+        // 1. HEADER 
         addCmd(alignCenter);
         addCmd(boldOn);
         addCmd(textDoubleH);
@@ -442,7 +498,7 @@
         addTxt(document.getElementById("viewBengkelAlamat").innerText + "\n");
         addTxt(divider);
 
-        // 2. INFORMASI PELANGGAN & MEKANIK (Kiri)
+        // 2. INFORMASI PELANGGAN & MEKANIK 
         addCmd(alignLeft);
         addTxt("No Inv : " + document.getElementById("inNo").value + "\n");
         addTxt("Tanggal: " + document.getElementById("inTanggal").value + "\n");
@@ -454,7 +510,6 @@
 
         // 3. DAFTAR BARANG DAN JASA
         listItemInvoice.forEach(item => {
-            // Nama barang otomatis dipotong kalau kepanjangan
             let nmItem = item.nama;
             if(nmItem.length > maxChar) nmItem = nmItem.substring(0, maxChar);
             addTxt(nmItem + "\n");
@@ -462,14 +517,13 @@
             const total = (item.harga * item.qty).toLocaleString('id-ID');
             const qtyHrg = `  ${item.qty} x ${item.harga.toLocaleString('id-ID')}`;
             
-            // Kalkulasi jarak spasi agar harga sejajar rata kanan
             const sLen = maxChar - qtyHrg.length - total.length;
             const spaces = sLen > 0 ? " ".repeat(sLen) : " ";
             addTxt(qtyHrg + spaces + total + "\n");
         });
         addTxt(divider);
 
-        // 4. SUMMARY (Subtotal, PPN, Total Akhir)
+        // 4. SUMMARY
         let subtotal = document.getElementById("viewSubtotal").innerText;
         let ppn = document.getElementById("viewTotalPPN").innerText;
         let grand = document.getElementById("viewGrandTotal").innerText;
@@ -488,7 +542,7 @@
         addTxt("Terima kasih atas kunjungan Anda.\n");
         addTxt("Barang yg sudah dibeli tdk dpt ditukar.\n");
         addCmd(lf); addCmd(lf); addCmd(lf); addCmd(lf);
-        addCmd(cutPaper); // Command pemotong kertas (berlaku untuk printer dengan auto-cutter)
+        addCmd(cutPaper); 
 
         return printData;
     }
