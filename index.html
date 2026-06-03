@@ -16,7 +16,7 @@
             color: #333;
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Mencegah scroll pada seluruh halaman */
+            overflow: hidden; 
         }
         
         .app-container { 
@@ -26,7 +26,6 @@
             flex-direction: row;
         }
 
-        /* CUSTOM SCROLLBAR UNTUK KESAN APLIKASI PROFESIONAL */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px; }
@@ -38,7 +37,7 @@
         .input-panel { 
             flex: 0 0 450px; 
             height: 100%;
-            overflow-y: auto; /* Scroll independen */
+            overflow-y: auto; 
             background: #fff; 
             padding: 20px; 
             box-sizing: border-box;
@@ -68,8 +67,8 @@
         .preview-wrapper {
             flex: 1;
             height: 100%;
-            overflow: auto; /* Scroll independen */
-            background: #e2e8f0; /* Warna latar meja/background kertas */
+            overflow: auto; 
+            background: #e2e8f0; 
             padding: 30px;
             display: flex;
             justify-content: center;
@@ -82,7 +81,7 @@
             min-height: 29.7cm; 
             background: #fff; 
             padding: 30px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Efek kertas melayang */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
             margin-bottom: 30px;
             box-sizing: border-box; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -147,16 +146,21 @@
         /* ========================================================
            KERTAS THERMAL 80mm: LAYOUT IDENTIK DENGAN PRINTER
            ======================================================== */
-        .thermal { width: 78mm !important; min-height: auto !important; padding: 5mm !important; font-family: 'Courier New', Courier, monospace !important; margin: 0 auto; color: #000 !important; font-size: 11px !important; }
+        .thermal { width: 78mm !important; min-height: auto !important; padding: 5mm !important; font-family: 'Courier New', Courier, monospace !important; margin: 0 auto; color: #000 !important; font-size: 11px !important; overflow: hidden;}
         .thermal .invoice-header { display: block; text-align: center; padding-bottom: 5px; margin-bottom: 10px; border-bottom: 1px dashed #000; }
         .thermal .comp-info h1 { margin: 0; color: #000; font-size: 16px; font-weight: bold;}
+        
+        /* Modifikasi Visual Layar agar terlihat muat 1 baris (Window.print / Layar) */
         .thermal .comp-info p { 
-            font-size: 8.5px; 
-            margin: 2px 0; 
+            font-family: 'Arial Narrow', Arial, sans-serif !important; 
+            font-size: 8px; 
+            margin: 1px 0; 
             color: #000; 
-            white-space: nowrap; /* Mencegah teks turun ke baris baru */
-            letter-spacing: -0.2px; /* Merapatkan spasi antar huruf sedikit */
+            white-space: nowrap; 
+            letter-spacing: -0.5px; 
+            overflow: hidden; 
         }
+        
         .thermal .inv-title { text-align: center; margin-top: 5px; }
         .thermal .inv-title h2 { font-size: 14px; margin: 0; color: #000; }
         .thermal .inv-title p { margin: 0; font-weight: normal; font-size: 10px; }
@@ -203,7 +207,7 @@
             .input-panel {
                 flex: none;
                 width: 100%;
-                height: 55vh; /* Ambil 55% area layar atas */
+                height: 55vh; 
                 border-right: none;
                 border-bottom: 2px solid #ccc;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -211,9 +215,9 @@
             .preview-wrapper {
                 flex: none;
                 width: 100%;
-                height: 45vh; /* Ambil 45% area layar bawah */
+                height: 45vh; 
                 padding: 15px;
-                justify-content: flex-start; /* Agar kertas selalu nampak dari ujung atas */
+                justify-content: flex-start; 
             }
             .form-row { flex-direction: column; gap: 0; }
             .form-row > div { margin-bottom: 12px; }
@@ -524,7 +528,7 @@
 
         try {
             const escposData = buildESCPOSTemplate();
-            const chunkSize = 100; // Kirim data per 100 bytes untuk stabilitas Bluetooth
+            const chunkSize = 50; // PENTING: Ukuran kecil agar memori printer tidak penuh
             
             for (let i = 0; i < escposData.length; i += chunkSize) {
                 const chunk = escposData.slice(i, i + chunkSize);
@@ -533,6 +537,8 @@
                 } else {
                     await globalPrintCharacteristic.writeValueWithoutResponse(chunk);
                 }
+                // PENTING: Jeda waktu (delay) 50ms agar printer tidak macet di tengah jalan
+                await new Promise(resolve => setTimeout(resolve, 50)); 
             }
         } catch (error) {
             console.error(error);
@@ -568,8 +574,8 @@
         const cutPaper = [0x1D, 0x56, 0x41, 0x00];
         
         // VARIABEL DESAIN (Mengikuti Pilihan Template)
-        let charDivider = "-"; // Default: Thermal 1 (Dashed)
-        let headerStyleCmd = [0x1B, 0x21, 0x10]; // Default Header: Double Height
+        let charDivider = "-"; 
+        let headerStyleCmd = [0x1B, 0x21, 0x10]; 
         let isBoldModern = false;
 
         if (selectedTheme.includes("theme-thermal-2")) {
@@ -577,11 +583,10 @@
             headerStyleCmd = textNormal; 
         } else if (selectedTheme.includes("theme-thermal-3")) {
             charDivider = "=";
-            headerStyleCmd = [0x1B, 0x21, 0x20]; // Double Width
+            headerStyleCmd = [0x1B, 0x21, 0x20]; 
             isBoldModern = true;
         }
 
-        // Ukuran lebar kertas kasir 80mm = 42 Karakter (Standar ESC/POS)
         const maxChar = 42; 
         
         function padRight(str, len) { 
@@ -604,16 +609,29 @@
         addCmd(headerStyleCmd);
         addTxt(document.getElementById("viewBengkelNama").innerText + "\n");
         
-        // --- TAMBAHAN: Gunakan Font B (Kecil) agar teks panjang muat 1 baris (~56 karakter) ---
-        const fontSmall = [0x1B, 0x21, 0x01]; 
-        addCmd(fontSmall); 
+        // --- GUNAKAN FONT B (KECIL) ---
+        const fontB = [0x1B, 0x21, 0x01]; 
+        addCmd(fontB); 
         addCmd(boldOff);
         
-        addTxt(document.getElementById("viewBengkelTagline").innerText + "\n");
-        addTxt(document.getElementById("viewBengkelAlamat").innerText + "\n");
-        addTxt(document.getElementById("viewBengkelKontak").innerText + "\n");
+        // --- LOGIKA PEMECAHAN TEKS PANJANG (DI PUSAT/TENGAH) ---
+        let tagline = document.getElementById("viewBengkelTagline").innerText.trim();
+        // Jika teks lebih dari 45 karakter, pecah di kata "&"
+        if(tagline.length > 45) {
+            tagline = tagline.replace(" & ", "\n& ");
+        }
+        addTxt(tagline + "\n");
         
-        // --- TAMBAHAN: Kembalikan ke Font A (Normal) untuk sisa struk ke bawah ---
+        addTxt(document.getElementById("viewBengkelAlamat").innerText.trim() + "\n");
+        
+        let kontak = document.getElementById("viewBengkelKontak").innerText.trim();
+        // Jika teks lebih dari 45 karakter, pecah di pemisah "|"
+        if(kontak.length > 45) {
+            kontak = kontak.replace(" | ", "\n");
+        }
+        addTxt(kontak + "\n");
+        
+        // --- KEMBALIKAN KE FONT A (NORMAL) UNTUK SISA STRUK BAWAH ---
         addCmd(textNormal); 
         addTxt(divider);
 
@@ -713,7 +731,7 @@
         addCmd(boldOff);
         addTxt(divider);
 
-        // 8. FOOTER (Tanda Tangan Telah Dihapus Sesuai Permintaan)
+        // 8. FOOTER
         addCmd(alignCenter);
         if(isBoldModern) addCmd(boldOn);
         addTxt("Terima kasih atas kunjungan Anda.\n");
