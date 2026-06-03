@@ -150,7 +150,13 @@
         .thermal { width: 78mm !important; min-height: auto !important; padding: 5mm !important; font-family: 'Courier New', Courier, monospace !important; margin: 0 auto; color: #000 !important; font-size: 11px !important; }
         .thermal .invoice-header { display: block; text-align: center; padding-bottom: 5px; margin-bottom: 10px; border-bottom: 1px dashed #000; }
         .thermal .comp-info h1 { margin: 0; color: #000; font-size: 16px; font-weight: bold;}
-        .thermal .comp-info p { font-size: 10px; margin: 2px 0; color: #000; }
+        .thermal .comp-info p { 
+            font-size: 8.5px; 
+            margin: 2px 0; 
+            color: #000; 
+            white-space: nowrap; /* Mencegah teks turun ke baris baru */
+            letter-spacing: -0.2px; /* Merapatkan spasi antar huruf sedikit */
+        }
         .thermal .inv-title { text-align: center; margin-top: 5px; }
         .thermal .inv-title h2 { font-size: 14px; margin: 0; color: #000; }
         .thermal .inv-title p { margin: 0; font-weight: normal; font-size: 10px; }
@@ -323,7 +329,7 @@
 
         <h2>5. Pengaturan Keuangan & Cetak</h2>
         <div class="form-row">
-            <div><label>PPN (%) jika ada:</label><input type="number" id="inPPN" value="" min="0" oninput="hitungUlangTotal()"></div>
+            <div><label>PPN (%) jika ada:</label><input type="number" id="inPPN" value="11" min="0" oninput="hitungUlangTotal()"></div>
         </div>
         <div class="form-group">
             <label>Catatan / Ketentuan Garansi:</label>
@@ -597,11 +603,18 @@
         if(isBoldModern) addCmd(boldOn);
         addCmd(headerStyleCmd);
         addTxt(document.getElementById("viewBengkelNama").innerText + "\n");
-        addCmd(textNormal);
+        
+        // --- TAMBAHAN: Gunakan Font B (Kecil) agar teks panjang muat 1 baris (~56 karakter) ---
+        const fontSmall = [0x1B, 0x21, 0x01]; 
+        addCmd(fontSmall); 
         addCmd(boldOff);
+        
         addTxt(document.getElementById("viewBengkelTagline").innerText + "\n");
         addTxt(document.getElementById("viewBengkelAlamat").innerText + "\n");
         addTxt(document.getElementById("viewBengkelKontak").innerText + "\n");
+        
+        // --- TAMBAHAN: Kembalikan ke Font A (Normal) untuk sisa struk ke bawah ---
+        addCmd(textNormal); 
         addTxt(divider);
 
         // 2. JUDUL INVOICE & INFO DASAR
