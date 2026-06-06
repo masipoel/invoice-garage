@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Invoice Bengkel Lengkap - Thermal Tanpa TTD</title>
+    <title>Aplikasi Invoice Bengkel Lengkap - Thermal & A4</title>
     <style>
         /* ========================================================
            GLOBAL STYLES & APP DASHBOARD LAYOUT (1 SCREEN)
@@ -144,55 +144,70 @@
         .theme-5 .sig-line { border-top: 1px solid #ccc; color: #777;}
 
         /* ========================================================
-           KERTAS THERMAL 80mm: LAYOUT IDENTIK DENGAN PRINTER
+           KERTAS THERMAL 80mm: IDENTIK LAYAR & PRINTER (REVISI)
            ======================================================== */
-        .thermal { width: 78mm !important; min-height: auto !important; padding: 5mm !important; font-family: 'Courier New', Courier, monospace !important; margin: 0 auto; color: #000 !important; font-size: 11px !important; overflow: hidden;}
-        .thermal .invoice-header { display: block; text-align: center; padding-bottom: 5px; margin-bottom: 10px; border-bottom: 1px dashed #000; }
-        .thermal .comp-info h1 { margin: 0; color: #000; font-size: 16px; font-weight: bold;}
-        
-        /* Modifikasi Visual Layar agar terlihat muat 1 baris (Window.print / Layar) */
-        .thermal .comp-info p { 
-            font-family: 'Arial Narrow', Arial, sans-serif !important; 
-            font-size: 8px; 
-            margin: 1px 0; 
-            color: #000; 
-            white-space: nowrap; 
-            letter-spacing: -0.5px; 
-            overflow: hidden; 
+        .thermal { 
+            width: 78mm !important; 
+            min-height: auto !important; 
+            padding: 4mm !important; 
+            font-family: 'Courier New', Courier, monospace !important; 
+            margin: 0 auto; 
+            color: #000 !important; 
+            font-size: 11px !important; 
+            line-height: 1.3 !important;
+            box-sizing: border-box !important;
+            background: #fff;
+            overflow: hidden;
         }
         
+        .thermal .invoice-header { display: block; text-align: center; padding-bottom: 5px; margin-bottom: 10px; border-bottom: 1px dashed #000; }
+        .thermal .comp-info h1 { margin: 0; color: #000; font-size: 15px; font-weight: bold; letter-spacing: 0; }
+        .thermal .comp-info p { font-family: 'Courier New', Courier, monospace !important; font-size: 10px; margin: 2px 0; color: #000; white-space: pre-wrap; }
+        
         .thermal .inv-title { text-align: center; margin-top: 5px; }
-        .thermal .inv-title h2 { font-size: 14px; margin: 0; color: #000; }
-        .thermal .inv-title p { margin: 0; font-weight: normal; font-size: 10px; }
+        .thermal .inv-title h2 { font-size: 13px; margin: 0; color: #000; font-weight: bold; letter-spacing: 0; }
+        .thermal .inv-title p { margin: 2px 0; font-weight: normal; font-size: 10px; }
         
         .thermal .info-section { display: block; margin-bottom: 10px; }
         .thermal .info-box { width: 100%; border: none; padding: 0; margin-bottom: 8px; background: none;}
         .thermal .info-box h3 { font-size: 11px; margin: 0; padding-bottom: 2px; color:#000; background: none; border-bottom: none; font-weight: bold;}
-        .thermal .info-table td { font-size: 10px; padding: 1px 0; color:#000; }
-        .thermal .info-table td:first-child { width: 75px; font-weight: normal;}
         
-        .thermal .items-table { font-size: 10px; margin-bottom: 10px; width: 100%; }
-        .thermal .items-table th { background: none; color: #000; border: none; padding: 4px 2px; text-align: left; border-bottom: 1px dashed #000;}
-        .thermal .items-table td { border: none; padding: 4px 2px; color: #000; }
+        /* Tabel Informasi Header */
+        .thermal .info-table { width: 100%; table-layout: fixed; }
+        .thermal .info-table td { font-size: 10px; padding: 1px 0; color:#000; word-wrap: break-word; }
+        .thermal .info-table td:first-child { width: 30%; font-weight: normal;}
+        
+        /* Tabel Item Belanja (Proporsi diatur setara 42 karakter mesin Thermal) */
+        .thermal .items-table { font-size: 10px; margin-bottom: 10px; width: 100%; table-layout: fixed; }
+        .thermal .items-table th { background: none; color: #000; border: none; padding: 4px 0; text-align: left; border-bottom: 1px dashed #000;}
+        .thermal .items-table td { border: none; padding: 4px 0; color: #000; vertical-align: top; }
+        
+        .thermal .items-table th:nth-child(1), .thermal .items-table td:nth-child(1) { width: 10%; text-align: left; }
+        .thermal .items-table th:nth-child(2), .thermal .items-table td:nth-child(2) { width: 50%; text-align: left; word-wrap: break-word; padding-right: 2px; }
+        .thermal .items-table th:nth-child(3), .thermal .items-table td:nth-child(3) { width: 10%; text-align: center; }
+        .thermal .items-table th:nth-child(5), .thermal .items-table td:nth-child(5) { width: 30%; text-align: right; }
         .thermal .items-table th:nth-child(4), .thermal .items-table td:nth-child(4) { display: none; }
         
         .thermal .summary-container { display: block; }
         .thermal .notes-view { width: 100%; font-size: 10px; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px dashed #000;}
-        .thermal .summary-table { width: 100%; }
-        .thermal .summary-table td { font-size: 10px; color:#000; }
-        .thermal .summary-table td:first-child { text-align: left; font-weight: normal;} 
-        .thermal .summary-table td:last-child { text-align: right; }
+        
+        /* Tabel Keuangan Bawah */
+        .thermal .summary-table { width: 100%; table-layout: fixed; }
+        .thermal .summary-table td { font-size: 10px; color:#000; padding: 2px 0; }
+        .thermal .summary-table td:first-child { text-align: left; font-weight: normal; width: 60%; } 
+        .thermal .summary-table td:last-child { text-align: right; width: 40%; }
+        
         .thermal .grand-total-row { background: none; font-size: 12px; border-top: 1px dashed #000; border-bottom: 1px dashed #000;}
         .thermal .grand-total-row td:first-child { font-weight: bold; }
-        
         .thermal .sig-section { display: none !important; }
 
+        /* Varian Border Thermal */
         .theme-thermal-1 .invoice-header, .theme-thermal-1 .items-table th, .theme-thermal-1 .notes-view { border-bottom-style: dashed; }
         .theme-thermal-1 .grand-total-row { border-top-style: dashed; border-bottom-style: dashed; }
         .theme-thermal-2 .comp-info h1 { font-size: 14px; font-weight: normal; }
         .theme-thermal-2 .invoice-header, .theme-thermal-2 .items-table th, .theme-thermal-2 .notes-view { border-bottom-style: dotted !important; }
         .theme-thermal-2 .grand-total-row { border-top-style: dotted !important; border-bottom-style: dotted !important; }
-        .theme-thermal-3 .comp-info h1 { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+        .theme-thermal-3 .comp-info h1 { font-size: 16px; font-weight: 900; }
         .theme-thermal-3 .items-table td:nth-child(2) { font-weight: bold; }
         .theme-thermal-3 .invoice-header, .theme-thermal-3 .items-table th, .theme-thermal-3 .notes-view { border-bottom: 2px solid #000 !important; }
         .theme-thermal-3 .grand-total-row { border-top: 2px solid #000 !important; border-bottom: 2px solid #000 !important; font-weight: 900; font-size: 13px;}
@@ -201,24 +216,9 @@
            RESPONSIVE MOBILE / TABLET (Tumpuk Vertikal 50:50)
            ======================================================== */
         @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-            .input-panel {
-                flex: none;
-                width: 100%;
-                height: 55vh; 
-                border-right: none;
-                border-bottom: 2px solid #ccc;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            }
-            .preview-wrapper {
-                flex: none;
-                width: 100%;
-                height: 45vh; 
-                padding: 15px;
-                justify-content: flex-start; 
-            }
+            .app-container { flex-direction: column; }
+            .input-panel { flex: none; width: 100%; height: 55vh; border-right: none; border-bottom: 2px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            .preview-wrapper { flex: none; width: 100%; height: 45vh; padding: 15px; justify-content: flex-start; }
             .form-row { flex-direction: column; gap: 0; }
             .form-row > div { margin-bottom: 12px; }
         }
@@ -304,8 +304,8 @@
                 <label>Kategori:</label>
                 <select id="kategori" onchange="pilihKategori()">
                     <option value="">-- Pilih --</option>
-                    <option value="Toyota">Toyota (75 Parts)</option>
-                    <option value="Mitsubishi">Mitsubishi (75 Parts)</option>
+                    <option value="Toyota">Toyota (150 Parts)</option>
+                    <option value="Mitsubishi">Mitsubishi (150 Parts)</option>
                     <option value="Suzuki">Suzuki (75 Parts)</option>
                     <option value="Daihatsu">Daihatsu (75 Parts)</option>
                     <option value="Ban">Ban Mobil (100 Item)</option>
@@ -395,11 +395,11 @@
             <table class="items-table">
                 <thead>
                     <tr>
-                        <th width="5%" class="text-left">No</th>
-                        <th width="55%" class="text-left">Deskripsi</th>
-                        <th width="8%" class="text-right">Qty</th>
-                        <th width="14%" class="text-right">Hrg Satuan</th>
-                        <th width="14%" class="text-right">Total</th>
+                        <th class="text-left">No</th>
+                        <th class="text-left">Deskripsi</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-right">Hrg Satuan</th>
+                        <th class="text-right">Total</th>
                         <th width="4%" class="text-center no-print">Aksi</th>
                     </tr>
                 </thead>
@@ -528,7 +528,7 @@
 
         try {
             const escposData = buildESCPOSTemplate();
-            const chunkSize = 50; // PENTING: Ukuran kecil agar memori printer tidak penuh
+            const chunkSize = 50; 
             
             for (let i = 0; i < escposData.length; i += chunkSize) {
                 const chunk = escposData.slice(i, i + chunkSize);
@@ -537,7 +537,6 @@
                 } else {
                     await globalPrintCharacteristic.writeValueWithoutResponse(chunk);
                 }
-                // PENTING: Jeda waktu (delay) 50ms agar printer tidak macet di tengah jalan
                 await new Promise(resolve => setTimeout(resolve, 50)); 
             }
         } catch (error) {
@@ -560,10 +559,8 @@
         }
         function addTxt(text) { addCmd(encoder.encode(text)); }
 
-        // Membaca Pilihan Template Saat Ini
         const selectedTheme = document.getElementById("inTemplate").value;
 
-        // Command dasar ESC/POS
         const init = [0x1B, 0x40]; 
         const alignCenter = [0x1B, 0x61, 0x01]; 
         const alignLeft = [0x1B, 0x61, 0x00]; 
@@ -573,7 +570,6 @@
         const lf = [0x0A]; 
         const cutPaper = [0x1D, 0x56, 0x41, 0x00];
         
-        // VARIABEL DESAIN (Mengikuti Pilihan Template)
         let charDivider = "-"; 
         let headerStyleCmd = [0x1B, 0x21, 0x10]; 
         let isBoldModern = false;
@@ -600,7 +596,6 @@
 
         const divider = charDivider.repeat(maxChar) + "\n";
 
-        // MULAI MERAKIT BYTE =======================
         addCmd(init);
         
         // 1. HEADER (Rata Tengah)
@@ -609,29 +604,23 @@
         addCmd(headerStyleCmd);
         addTxt(document.getElementById("viewBengkelNama").innerText + "\n");
         
-        // --- GUNAKAN FONT B (KECIL) ---
         const fontB = [0x1B, 0x21, 0x01]; 
         addCmd(fontB); 
         addCmd(boldOff);
         
-        // --- LOGIKA PEMECAHAN TEKS PANJANG (DI PUSAT/TENGAH) ---
         let tagline = document.getElementById("viewBengkelTagline").innerText.trim();
-        // Jika teks lebih dari 45 karakter, pecah di kata "&"
         if(tagline.length > 45) {
             tagline = tagline.replace(" & ", "\n& ");
         }
         addTxt(tagline + "\n");
-        
         addTxt(document.getElementById("viewBengkelAlamat").innerText.trim() + "\n");
         
         let kontak = document.getElementById("viewBengkelKontak").innerText.trim();
-        // Jika teks lebih dari 45 karakter, pecah di pemisah "|"
         if(kontak.length > 45) {
             kontak = kontak.replace(" | ", "\n");
         }
         addTxt(kontak + "\n");
         
-        // --- KEMBALIKAN KE FONT A (NORMAL) UNTUK SISA STRUK BAWAH ---
         addCmd(textNormal); 
         addTxt(divider);
 
@@ -769,9 +758,10 @@
         area.className = "preview-panel " + selectedTheme;
     }
 
-    // DATABASE 500 ITEM
+    // DATABASE 650 ITEM
     const databaseSukuCadang = {
         "Toyota": [
+            // --- 75 ITEM EXISTING ---
             { nama: "[Toyota] Oli Mesin TMO 10W-40 Synthetic (Galon 4L)", harga: 480000, tipe: "part" },
             { nama: "[Toyota] Oli Mesin TMO 5W-30 Full Synthetic (Galon 4L)", harga: 650000, tipe: "part" },
             { nama: "[Toyota] Oli Mesin TMO 15W-40 Diesel (Galon 4L)", harga: 450000, tipe: "part" },
@@ -846,9 +836,86 @@
             { nama: "[Toyota] Motor Pompa Bensin (Fuel Pump) Avanza", harga: 850000, tipe: "part" },
             { nama: "[Toyota] Aki / Baterai NS40ZL (Avanza/Agya)", harga: 950000, tipe: "part" },
             { nama: "[Toyota] Bohlam Lampu Depan H4 Standar", harga: 65000, tipe: "part" },
-            { nama: "[Toyota] Relay Lampu Kaki 4", harga: 45000, tipe: "part" }
+            { nama: "[Toyota] Relay Lampu Kaki 4", harga: 45000, tipe: "part" },
+            // --- 75 ITEM TAMBAHAN TOYOTA ---
+            { nama: "[Toyota] Sensor Oksigen (O2) Avanza/Xenia", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Sensor Oksigen (O2) Innova Reborn", harga: 1200000, tipe: "part" },
+            { nama: "[Toyota] MAF Sensor Yaris/Vios", harga: 950000, tipe: "part" },
+            { nama: "[Toyota] MAP Sensor Avanza VVT-i", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Sensor ABS Depan Avanza", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Sensor ABS Belakang Innova", harga: 750000, tipe: "part" },
+            { nama: "[Toyota] Throttle Body Assy Avanza 1.3", harga: 2500000, tipe: "part" },
+            { nama: "[Toyota] Idle Speed Control (ISC) Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Injektor Bensin Avanza (Per Pcs)", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Injektor Diesel Innova Reborn (Per Pcs)", harga: 3500000, tipe: "part" },
+            { nama: "[Toyota] Fuel Rail Pressure Sensor Hilux", harga: 1800000, tipe: "part" },
+            { nama: "[Toyota] Pompa Power Steering Avanza", harga: 1250000, tipe: "part" },
+            { nama: "[Toyota] Steering Rack Assy Avanza", harga: 3500000, tipe: "part" },
+            { nama: "[Toyota] Karet Boot Steering Rack Avanza", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Tabung Cadangan Air Radiator Avanza", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Tabung Minyak Rem Avanza", harga: 220000, tipe: "part" },
+            { nama: "[Toyota] Kipas Radiator (Blade) Avanza", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Visco Fan Clutch Innova Diesel", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Kompresor AC Avanza/Xenia", harga: 2100000, tipe: "part" },
+            { nama: "[Toyota] Kompresor AC Innova Reborn", harga: 3800000, tipe: "part" },
+            { nama: "[Toyota] Kondensor AC Avanza", harga: 950000, tipe: "part" },
+            { nama: "[Toyota] Evaporator AC Depan Avanza", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Evaporator AC Belakang Avanza", harga: 750000, tipe: "part" },
+            { nama: "[Toyota] Magnetic Clutch AC Avanza", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Motor Blower AC Depan Avanza", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Motor Blower AC Belakang Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Ekspansi AC Avanza", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Filter Dryer AC Innova", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Dinamo Ampere (Alternator) Avanza", harga: 1800000, tipe: "part" },
+            { nama: "[Toyota] Dinamo Ampere (Alternator) Innova Bensin", harga: 2200000, tipe: "part" },
+            { nama: "[Toyota] Dinamo Starter Avanza", harga: 1250000, tipe: "part" },
+            { nama: "[Toyota] Dinamo Starter Innova Diesel", harga: 1850000, tipe: "part" },
+            { nama: "[Toyota] Bendik Starter Avanza", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Switch Oli Avanza", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Switch Temperatur Air Avanza", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Switch Lampu Rem Avanza", harga: 85000, tipe: "part" },
+            { nama: "[Toyota] Switch Atret / Mundur Avanza", harga: 120000, tipe: "part" },
+            { nama: "[Toyota] Master Rem Atas (BM Assy) Avanza", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Master Rem Bawah (Wheel Cylinder) Avanza", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Booster Rem Assy Avanza", harga: 1500000, tipe: "part" },
+            { nama: "[Toyota] Kabel Rem Tangan Avanza (Kiri/Kanan)", harga: 280000, tipe: "part" },
+            { nama: "[Toyota] Kampas Rem Tangan (Shoe) Innova", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Karet Pelindung Debu Shock Depan Avanza", harga: 120000, tipe: "part" },
+            { nama: "[Toyota] Stopper Shockbreaker Belakang Avanza", harga: 95000, tipe: "part" },
+            { nama: "[Toyota] Baut Chamber (Camber) Avanza", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Baut Roda Depan Avanza (Per Pcs)", harga: 25000, tipe: "part" },
+            { nama: "[Toyota] Mur Roda Racing (Set 16 Pcs)", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Bearing Roda Depan Innova (ABS)", harga: 750000, tipe: "part" },
+            { nama: "[Toyota] Bearing Roda Belakang Innova", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] As Roda (Drive Shaft) Kanan Avanza", harga: 1850000, tipe: "part" },
+            { nama: "[Toyota] As Roda (Drive Shaft) Kiri Avanza", harga: 1850000, tipe: "part" },
+            { nama: "[Toyota] CV Joint Luar (Kokel) Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] CV Joint Dalam (Kokel) Avanza", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Karet Boot CV Joint Dalam Avanza", harga: 120000, tipe: "part" },
+            { nama: "[Toyota] Headlamp Assy Kanan Avanza (Bohlam)", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Headlamp Assy Kiri Avanza (Bohlam)", harga: 850000, tipe: "part" },
+            { nama: "[Toyota] Stoplamp Assy Kanan Avanza", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Stoplamp Assy Kiri Avanza", harga: 550000, tipe: "part" },
+            { nama: "[Toyota] Foglamp Assy Set Avanza", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Mika Kaca Headlamp Avanza (Per Pcs)", harga: 350000, tipe: "part" },
+            { nama: "[Toyota] Bohlam Headlamp LED H4 (Set)", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Bohlam Senja / Plat Nomor T10 LED", harga: 35000, tipe: "part" },
+            { nama: "[Toyota] Spion Assy Kanan Avanza (Elektrik)", harga: 950000, tipe: "part" },
+            { nama: "[Toyota] Kaca Spion Kanan Avanza", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Motor Lipat (Retract) Spion Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Saklar Power Window Utama (Kanan) Avanza", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Saklar Power Window Penumpang Avanza", harga: 180000, tipe: "part" },
+            { nama: "[Toyota] Motor Power Window Avanza", harga: 450000, tipe: "part" },
+            { nama: "[Toyota] Karet Kaca Pintu (Run Glass) Avanza", harga: 250000, tipe: "part" },
+            { nama: "[Toyota] Handle Pintu Luar Avanza (Krom)", harga: 150000, tipe: "part" },
+            { nama: "[Toyota] Handle Pintu Dalam Avanza", harga: 85000, tipe: "part" },
+            { nama: "[Toyota] Karet Wiper Belakang Innova", harga: 95000, tipe: "part" },
+            { nama: "[Toyota] Motor Wiper Depan Avanza", harga: 650000, tipe: "part" },
+            { nama: "[Toyota] Tabung Air Wiper Avanza", harga: 220000, tipe: "part" },
+            { nama: "[Toyota] Pompa Air Wiper (Washer) Avanza", harga: 180000, tipe: "part" }
         ],
         "Mitsubishi": [
+            // --- 75 ITEM EXISTING ---
             { nama: "[Mitsubishi] Oli Mesin MMGO 10W-30 (Galon 5L)", harga: 650000, tipe: "part" },
             { nama: "[Mitsubishi] Oli Mesin MMGO 0W-20 Xpander (4L)", harga: 550000, tipe: "part" },
             { nama: "[Mitsubishi] Oli Transmisi Manual GL-4 80W-90 (1L)", harga: 95000, tipe: "part" },
@@ -923,7 +990,83 @@
             { nama: "[Mitsubishi] Wiper Blade Depan Xpander", harga: 220000, tipe: "part" },
             { nama: "[Mitsubishi] Bohlam Foglamp H11", harga: 120000, tipe: "part" },
             { nama: "[Mitsubishi] Kabel Speedometer L300", harga: 180000, tipe: "part" },
-            { nama: "[Mitsubishi] Switch Atret / Mundur L300", harga: 150000, tipe: "part" }
+            { nama: "[Mitsubishi] Switch Atret / Mundur L300", harga: 150000, tipe: "part" },
+            // --- 75 ITEM TAMBAHAN MITSUBISHI ---
+            { nama: "[Mitsubishi] Sensor Oksigen (O2) Xpander", harga: 950000, tipe: "part" },
+            { nama: "[Mitsubishi] MAF Sensor Pajero Sport", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] MAP Sensor Xpander", harga: 750000, tipe: "part" },
+            { nama: "[Mitsubishi] Sensor ABS Depan Xpander", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Sensor ABS Belakang Pajero Sport", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Throttle Body Assy Xpander", harga: 2800000, tipe: "part" },
+            { nama: "[Mitsubishi] Idle Speed Control (ISC) L300 Bensin", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Injektor Bensin Xpander (Per Pcs)", harga: 750000, tipe: "part" },
+            { nama: "[Mitsubishi] Injektor Diesel Pajero Sport (Per Pcs)", harga: 4500000, tipe: "part" },
+            { nama: "[Mitsubishi] Injektor Diesel L300 Euro 4 (Per Pcs)", harga: 3800000, tipe: "part" },
+            { nama: "[Mitsubishi] Supply Pump / Bosch Pump Triton", harga: 8500000, tipe: "part" },
+            { nama: "[Mitsubishi] Fuel Rail Pressure Sensor Triton", harga: 2100000, tipe: "part" },
+            { nama: "[Mitsubishi] Pompa Power Steering Pajero Sport", harga: 1850000, tipe: "part" },
+            { nama: "[Mitsubishi] Steering Rack Assy Xpander", harga: 4500000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Boot Steering Rack Xpander", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Tabung Cadangan Air Radiator Xpander", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Tabung Minyak Rem Xpander", harga: 250000, tipe: "part" },
+            { nama: "[Mitsubishi] Motor Fan Radiator Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Visco Fan Clutch Triton 2.5", harga: 950000, tipe: "part" },
+            { nama: "[Mitsubishi] Kompresor AC Xpander", harga: 2400000, tipe: "part" },
+            { nama: "[Mitsubishi] Kompresor AC Pajero Sport", harga: 4200000, tipe: "part" },
+            { nama: "[Mitsubishi] Kondensor AC Xpander", harga: 1100000, tipe: "part" },
+            { nama: "[Mitsubishi] Evaporator AC Depan Xpander", harga: 950000, tipe: "part" },
+            { nama: "[Mitsubishi] Evaporator AC Belakang Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Magnetic Clutch AC Xpander", harga: 750000, tipe: "part" },
+            { nama: "[Mitsubishi] Motor Blower AC Depan Xpander", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] Ekspansi AC Xpander", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Dinamo Ampere (Alternator) Xpander", harga: 2100000, tipe: "part" },
+            { nama: "[Mitsubishi] Dinamo Ampere (Alternator) L300 Diesel", harga: 1850000, tipe: "part" },
+            { nama: "[Mitsubishi] Dinamo Starter Xpander", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] Dinamo Starter L300 Diesel", harga: 1550000, tipe: "part" },
+            { nama: "[Mitsubishi] Bendik Starter Triton", harga: 350000, tipe: "part" },
+            { nama: "[Mitsubishi] Switch Oli Xpander", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Switch Temperatur Air Xpander", harga: 210000, tipe: "part" },
+            { nama: "[Mitsubishi] Switch Lampu Rem Xpander", harga: 95000, tipe: "part" },
+            { nama: "[Mitsubishi] Master Rem Atas (BM Assy) Xpander", harga: 950000, tipe: "part" },
+            { nama: "[Mitsubishi] Master Rem Bawah (Wheel Cylinder) L300", harga: 350000, tipe: "part" },
+            { nama: "[Mitsubishi] Booster Rem Assy Xpander", harga: 1850000, tipe: "part" },
+            { nama: "[Mitsubishi] Kabel Rem Tangan Xpander (Kiri/Kanan)", harga: 320000, tipe: "part" },
+            { nama: "[Mitsubishi] Kampas Rem Tangan (Shoe) Pajero Sport", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Pelindung Debu Shock Depan Xpander", harga: 150000, tipe: "part" },
+            { nama: "[Mitsubishi] Stopper Shockbreaker Belakang Xpander", harga: 120000, tipe: "part" },
+            { nama: "[Mitsubishi] Baut Chamber (Camber) Xpander", harga: 180000, tipe: "part" },
+            { nama: "[Mitsubishi] Baut Roda Depan L300 (Per Pcs)", harga: 35000, tipe: "part" },
+            { nama: "[Mitsubishi] Bearing Roda Belakang Xpander (Hub Assy)", harga: 1250000, tipe: "part" },
+            { nama: "[Mitsubishi] Bearing Roda Depan L300", harga: 450000, tipe: "part" },
+            { nama: "[Mitsubishi] As Roda (Drive Shaft) Kanan Xpander", harga: 2200000, tipe: "part" },
+            { nama: "[Mitsubishi] As Roda (Drive Shaft) Kiri Xpander", harga: 2200000, tipe: "part" },
+            { nama: "[Mitsubishi] CV Joint Luar (Kokel) Xpander", harga: 650000, tipe: "part" },
+            { nama: "[Mitsubishi] CV Joint Dalam (Kokel) Xpander", harga: 750000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Boot CV Joint Dalam Xpander", harga: 150000, tipe: "part" },
+            { nama: "[Mitsubishi] Headlamp Assy Kanan Xpander (LED)", harga: 2500000, tipe: "part" },
+            { nama: "[Mitsubishi] Headlamp Assy Kiri Xpander (LED)", harga: 2500000, tipe: "part" },
+            { nama: "[Mitsubishi] Headlamp Assy Kanan L300", harga: 450000, tipe: "part" },
+            { nama: "[Mitsubishi] Stoplamp Assy Kanan Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Stoplamp Assy Kiri Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Foglamp Assy Set Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Bohlam Headlamp H4 L300", harga: 75000, tipe: "part" },
+            { nama: "[Mitsubishi] Spion Assy Kanan Xpander (Retract)", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] Kaca Spion Kanan Xpander", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Motor Lipat (Retract) Spion Xpander", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Saklar Power Window Utama Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Saklar Power Window Penumpang Xpander", harga: 250000, tipe: "part" },
+            { nama: "[Mitsubishi] Motor Power Window Xpander", harga: 550000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Kaca Pintu (Run Glass) Xpander", harga: 320000, tipe: "part" },
+            { nama: "[Mitsubishi] Handle Pintu Luar Xpander (Krom)", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Handle Pintu Dalam Xpander", harga: 120000, tipe: "part" },
+            { nama: "[Mitsubishi] Karet Wiper Belakang Xpander", harga: 110000, tipe: "part" },
+            { nama: "[Mitsubishi] Motor Wiper Depan Xpander", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Tabung Air Wiper Xpander", harga: 280000, tipe: "part" },
+            { nama: "[Mitsubishi] Pompa Air Wiper (Washer) Xpander", harga: 220000, tipe: "part" },
+            { nama: "[Mitsubishi] Piston Assy STD L300 Diesel", harga: 1450000, tipe: "part" },
+            { nama: "[Mitsubishi] Ring Piston STD L300 Diesel", harga: 850000, tipe: "part" },
+            { nama: "[Mitsubishi] Metal Jalan L300 Diesel", harga: 450000, tipe: "part" },
+            { nama: "[Mitsubishi] Metal Duduk L300 Diesel", harga: 550000, tipe: "part" }
         ],
         "Suzuki": [
             { nama: "[Suzuki] Oli SGO Ecstar 5W-30 (Galon 4L)", harga: 420000, tipe: "part" },
@@ -1364,9 +1507,9 @@
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td class="text-center">${index + 1}</td>
+                <td class="text-left">${index + 1}</td>
                 <td class="text-left">${item.nama}</td>
-                <td class="text-right">${item.qty}</td>
+                <td class="text-center">${item.qty}</td>
                 <td class="text-right">${item.harga.toLocaleString('id-ID')}</td>
                 <td class="text-right">${totalBaris.toLocaleString('id-ID')}</td>
                 <td class="text-center no-print"><button class="btn-del-item" onclick="hapusItemInvoice(${index})">X</button></td>
